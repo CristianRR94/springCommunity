@@ -1,5 +1,9 @@
 package com.project.community.entidades;
 
+
+
+import com.project.community.mapper.TimestampEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,16 +17,18 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper=false)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 
 @Entity
 @Table(name="usuarios")
-public class Usuario {
+public class Usuario extends TimestampEntity{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,5 +51,7 @@ public class Usuario {
 	@Email
 	@Column(unique = true)
 	private String email;
+	
+
 
 }
