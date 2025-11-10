@@ -50,10 +50,10 @@ public class EventoController {
 				.create();
 		Evento evento = gson.fromJson(eventoJson, Evento.class);
 		if(imagen != null && !imagen.isEmpty()) {
-			String archivo = imageService.postImage(imagen);
+			String archivo = imageService.postImage(imagen, evento.getId());
 			evento.setImagenEvento(archivo);
 		}
-		return eventoService.postEvento(evento); 
+		return eventoService.postEvento(evento);
 	}
 	
 	@PutMapping("modificar/{id}")

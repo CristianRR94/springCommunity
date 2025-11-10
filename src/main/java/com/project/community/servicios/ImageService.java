@@ -12,7 +12,7 @@ public interface ImageService {
 	
 	public Stream<Path> getImages();
 	
-	public String postImage(MultipartFile file);
+	public String postImage(MultipartFile file, Long id);
 	
 	public void deleteImage(String filename);
 }
