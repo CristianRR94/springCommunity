@@ -52,6 +52,8 @@ public class Usuario extends TimestampEntity{
 	@Column(unique = true)
 	private String email;
 	
-
+	@NotBlank
+	@Builder.Default
+	private String rol = "USUARIO";
 
 }

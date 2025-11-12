@@ -8,6 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ImageHandlerConfig implements WebMvcConfigurer{
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registro) {
-		registro.addResourceHandler("/images/**").addResourceLocations("file:" + System.getProperty("user.dir")+ "/images/");
+		registro.addResourceHandler("/images/**")
+		.addResourceLocations("file:" + System.getProperty("user.dir")+ "/images/");
 	}
 }
