@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import org.springframework.core.io.Resource;
@@ -67,18 +68,18 @@ public class ImageServiceImpl implements ImageService{
 	}
 
 	@Override
-	public String postImage(MultipartFile file, Long eventoId) {
+	public String postImage(MultipartFile file) {
 		try {
 			if(file.isEmpty()) {
 				throw new RuntimeException("Archivo vacío");
 			}
+			String originalFileName = file.getOriginalFilename();
+			securityMethods.limpiarFile(originalFileName);
+			securityMethods.getValidacionExtension(originalFileName);
 			String extension = getExtension(file.getOriginalFilename());
-			String nombreImagen = "evento_" + eventoId + extension;
-			Path destination = rootLocation.resolve(
-				Path.of(file.getOriginalFilename())).normalize().toAbsolutePath();
-			if(!destination.startsWith(rootLocation.toAbsolutePath())) {
-				throw new RuntimeException("No se puede guardar fuera del directorio permitido");
-			}
+			String nombreImagen =  UUID.randomUUID().toString() + extension;
+			Path destination = rootLocation.resolve(nombreImagen).normalize().toAbsolutePath();
+			securityMethods.controlarDirectorio(destination);
 			try(InputStream  inputStream = file.getInputStream()){
 				Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
 			}

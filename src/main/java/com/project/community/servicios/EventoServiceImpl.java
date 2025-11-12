@@ -39,8 +39,8 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	public void deleteEvento(Evento evento) {
-
+	public void deleteEvento(Long id) {
+		Evento evento = eventoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Evento no encontrado con id: " + id));
 		eventoRepository.delete(evento);
 	}
 

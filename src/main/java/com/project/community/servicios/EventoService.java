@@ -11,5 +11,5 @@ public interface EventoService {
 	
 	public Evento putEvento(Evento evento);
 	
-	public void deleteEvento(Evento evento);
+	public void deleteEvento(Long id);
 }

@@ -1,6 +1,8 @@
 package com.project.community.entidades;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+
+
 import java.util.HashSet;
 import java.util.Set;
 import com.project.community.mapper.TimestampEntity;
@@ -45,7 +47,7 @@ public class Evento extends TimestampEntity {
 	private String tipoEvento;
 	
 	
-	private LocalDateTime fechaEvento;
+	private LocalDate fechaEvento;
 	private String informacion;
 	private String chat;
 	private String imagenEvento; 
