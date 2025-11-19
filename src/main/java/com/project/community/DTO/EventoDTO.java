@@ -1,6 +1,7 @@
 package com.project.community.DTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +22,6 @@ public class EventoDTO {
 	private boolean privado;
 	private boolean oculto;
 	private int maxNumParticipantes;
-
+	private List<Long> participanteIds;
+	private List<Long> administradorIds;
 }

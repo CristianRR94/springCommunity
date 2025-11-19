@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 import java.util.HashSet;
 import java.util.Set;
-import com.project.community.mapper.TimestampEntity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -83,7 +83,7 @@ public class Evento extends TimestampEntity {
    //     this.updatedAt = LocalDateTime.now();
    // }
 	
-	 // Domain Driven Design
+	 // Domain Driven Design - domain methods
     public void addParticipante(Participante participante) {
         participantesEvento.add(participante);
         participante.getEventos().add(this);
@@ -111,6 +111,9 @@ public class Evento extends TimestampEntity {
         participante.getEventosAdministrados().remove(this);
     }
     
+    public int countParticipantes(Set<Participante> participantesEvento) {
+    	return participantesEvento.size();
+    }
    
 }
 

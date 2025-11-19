@@ -1,6 +1,9 @@
 package com.project.community.controladores;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,9 +21,8 @@ import com.project.community.DTO.EventoDTO;
 //import com.project.community.config.LocalDateTimeAdapter;
 import com.project.community.entidades.Evento;
 import com.project.community.mapper.EventoMapper;
-import com.project.community.servicios.EventoServiceImpl;
-import com.project.community.servicios.ImageServiceImpl;
-
+import com.project.community.servicios.EventoService;
+import com.project.community.servicios.ImageService;
 import jakarta.validation.Valid;
 
 @RestController
@@ -28,39 +30,22 @@ import jakarta.validation.Valid;
 @RequestMapping("/evento")
 public class EventoController {
 	
-	private final EventoServiceImpl eventoService;
-	private final ImageServiceImpl imageService;
+	private final EventoService eventoService;
+	private final ImageService imageService;
 	private final EventoMapper eventoMapper;
 	
-	public EventoController(EventoServiceImpl eventoService, ImageServiceImpl imageService, EventoMapper eventoMapper) {
+	public EventoController(EventoService eventoService, ImageService imageService, EventoMapper eventoMapper) {
 		this.eventoService = eventoService;
 		this.imageService = imageService;	
 		this.eventoMapper = eventoMapper;
 	}
-	
-//	@GetMapping("{id}")
-//	public Evento getEvento(@PathVariable Long id) {
-//		return eventoService.getEvento(id);
-//	}
 	
 	@GetMapping("/{id}")
 	public EventoDTO getEvento(@PathVariable Long id) {
 		Evento evento = eventoService.getEvento(id);
 		return eventoMapper.toDTO(evento);
 	}
-	
-//	@PostMapping(consumes = "multipart/form-data")
-//	public Evento createEvento(
-//			@RequestPart("evento") Evento evento,
-//			@RequestPart(value="image", required=false) MultipartFile imagen 
-//			) {
-//		if(imagen != null && !imagen.isEmpty()) {
-//			String archivo = imageService.postImage(imagen);
-//			evento.setImagenEvento(archivo);
-//		}
-//		return eventoService.postEvento(evento);
-//	}
-	
+
 	@PostMapping(consumes = "multipart/form-data")
 	public EventoDTO createEvento(
 			@Valid @RequestPart("evento") EventoDTO eventoDTO,
@@ -74,12 +59,7 @@ public class EventoController {
 		Evento eventoGuardado = eventoService.postEvento(evento); 
 		return eventoMapper.toDTO(eventoGuardado);
 	}
-	
-//	@PutMapping("modificar/{id}")
-//	public Evento updateEvento(@RequestBody Evento evento) {
-//		return eventoService.putEvento(evento);
-//	}
-	
+
 	@PutMapping("modificar/{id}")
 	public EventoDTO updateEvento(@Valid @RequestBody EventoDTO eventoDTO) {
 		Evento evento = eventoMapper.toEvento(eventoDTO);
@@ -87,24 +67,49 @@ public class EventoController {
 		return eventoMapper.toDTO(eventoGuardado);
 	}
 	
+	@GetMapping
+	public List<EventoDTO> getEventos(){
+		List<Evento> eventos = eventoService.getEventos();
+		return eventoMapper.toDTOs(eventos);
+	}
+
+	@DeleteMapping("delete/{id}")
+	public void deleteEvento(Long id) {
+		eventoService.deleteEvento(id);
+	}
+	
+	//uso del entity sin DTO
+	
+//	@GetMapping("{id}")
+//	public Evento getEvento(@PathVariable Long id) {
+//		return eventoService.getEvento(id);
+//	}
+	
+//	@PostMapping(consumes = "multipart/form-data")
+//	public Evento createEvento(
+//			@RequestPart("evento") Evento evento,
+//			@RequestPart(value="image", required=false) MultipartFile imagen 
+//			) {
+//		if(imagen != null && !imagen.isEmpty()) {
+//			String archivo = imageService.postImage(imagen);
+//			evento.setImagenEvento(archivo);
+//		}
+//		return eventoService.postEvento(evento);
+//	}
+	
+//	@PutMapping("modificar/{id}")
+//	public Evento updateEvento(@RequestBody Evento evento) {
+//		return eventoService.putEvento(evento);
+//	}
+	
 //	@GetMapping
 //	public Iterable<Evento>getEventos(){
 //		return eventoService.getEventos();
 //	}
-	
-	@GetMapping
-	public Iterable<EventoDTO> getEventos(){
-		Iterable<Evento> eventos = eventoService.getEventos();
-		return eventoMapper.toDTOs(eventos);
-	}
 	
 //	@DeleteMapping("delete/{id}")
 //	public void deleteEvento(Long id) {
 //		eventoService.deleteEvento(id);
 //	}
 	
-	@DeleteMapping("delete/{id}")
-	public void deleteEvento(Long id) {
-		eventoService.deleteEvento(id);
-	}
 }

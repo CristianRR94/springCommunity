@@ -8,7 +8,7 @@ import com.project.community.entidades.Participante;
 import com.project.community.repositorios.ParticipanteRepository;
 @Service
 public class ParticipanteServiceImpl implements ParticipanteService{
-
+	
 	private final ParticipanteRepository participanteRepository;
 	
 	public ParticipanteServiceImpl(ParticipanteRepository participanteRepository) {
@@ -43,9 +43,19 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 		
 		participanteRepository.delete(participante);
 	}
+	
+	public Participante findParticipanteByUsuario(Long id) {
+		return participanteRepository.findByUsuarioId(id);
+	}
+	
 	public Participante crearParticipanteNombre(String nombre) {
 		return Participante.builder().nombreParticipante(nombre).build();
 	}
-
+	
+	public void cambiarParticipanteNombre(String nombre, Long UsuarioId) {
+		Participante participante = this.findParticipanteByUsuario(UsuarioId);
+		 participante.cambiarNombreParticipante(nombre);
+		 participanteRepository.save(participante);
+	}
 
 }

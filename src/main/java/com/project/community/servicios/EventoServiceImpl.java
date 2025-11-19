@@ -1,5 +1,7 @@
 package com.project.community.servicios;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.project.community.entidades.Evento;
@@ -17,11 +19,11 @@ public class EventoServiceImpl implements EventoService{
 	@Override
 	public Evento getEvento(Long id) {
 
-		return eventoRepository.findById(id).orElse(null);
+		return eventoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Evento no encontrado con id: " + id));
 	}
 
 	@Override
-	public Iterable<Evento> getEventos() {
+	public List<Evento> getEventos() {
 
 		return eventoRepository.findAll();
 	}

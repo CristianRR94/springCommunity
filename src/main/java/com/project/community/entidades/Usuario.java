@@ -2,8 +2,6 @@ package com.project.community.entidades;
 
 
 
-import com.project.community.mapper.TimestampEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,4 +54,14 @@ public class Usuario extends TimestampEntity{
 	@Builder.Default
 	private String rol = "USUARIO";
 
+	
+	public void cambiarNombre(String nombre) {
+		if(nombre == null || nombre.isBlank()) {
+			throw new IllegalArgumentException("Nombre vacío");
+		}
+		if(nombre.length()<6 || nombre.length()>20) {
+			throw new IllegalArgumentException("El nombre debe tener entre 6 y 20 letras");
+		}
+		this.nombre = nombre;
+	}
 }

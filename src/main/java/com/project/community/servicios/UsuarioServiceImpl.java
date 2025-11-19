@@ -1,5 +1,7 @@
 package com.project.community.servicios;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.project.community.entidades.Usuario;
@@ -12,6 +14,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	private final UsuarioRepository usuarioRepository;
 	
 	public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+
 		this.usuarioRepository = usuarioRepository;
 	}
 
@@ -22,7 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public Iterable<Usuario> getUsuarios() {
+	public List<Usuario> getUsuarios() {
 		
 		return usuarioRepository.findAll();
 	}
@@ -34,8 +37,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 	}
 
 	@Override
-	public void deleteUsuario(Usuario usuario) {
-		usuarioRepository.delete(usuario);
+	public void deleteUsuario(Long id) {
+		usuarioRepository.deleteById(id);
 		
 	}
 
@@ -43,6 +46,12 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public Usuario putUsuario(Usuario usuario) {
 		
 		return usuarioRepository.save(usuario);
+	}
+
+	@Override
+	public Usuario encontrarNombre(String nombre) {
+		
+		return usuarioRepository.findByNombre(nombre);
 	}
 
 }

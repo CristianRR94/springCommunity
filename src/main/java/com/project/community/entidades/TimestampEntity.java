@@ -1,4 +1,4 @@
-package com.project.community.mapper;
+package com.project.community.entidades;
 
 import java.time.LocalDateTime;
 

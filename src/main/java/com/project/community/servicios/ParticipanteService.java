@@ -16,9 +16,13 @@ public interface ParticipanteService {
 	
 	public void deleteParticipante(Participante participante);
 	
+	public Participante findParticipanteByUsuario(Long id);
+	
 	//methods for the creation of "Participante" based on "Usuario"
 	
 	//public Participante postNameParticipante(Participante participante, String name);
 	
 	public Participante crearParticipanteNombre(String nombre);
+	
+	public void cambiarParticipanteNombre(String nombre, Long usuarioId);
 }

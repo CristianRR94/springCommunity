@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.project.community.mapper.TimestampEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -61,5 +60,13 @@ public class Participante extends TimestampEntity {
 	@JsonIgnoreProperties({"password", "email"})
 	private Usuario usuario;
 	
-
+	public void cambiarNombreParticipante(String nombre) {
+		if(nombre == null || nombre.isBlank()) {
+			throw new IllegalArgumentException("Nombre vacío");
+		}
+		if(nombre.length()<6 || nombre.length()>20) {
+			throw new IllegalArgumentException("El nombre debe tener entre 6 y 20 letras");
+		}
+		this.nombreParticipante = nombre;
+	}
 }
