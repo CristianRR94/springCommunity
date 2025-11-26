@@ -19,10 +19,9 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 
 	@Override
 	@Transactional
-	public Usuario createUsuarioParticipante(Usuario usuario, Participante participante) {
+	public Usuario createUsuarioParticipante(Usuario usuario) {
 		Usuario nuevoUsuario = usuarioService.postUsuario(usuario);
-		participante.setNombreParticipante(nuevoUsuario.getNombre());
-		participante.setUsuario(nuevoUsuario);
+		Participante participante = participanteService.crearParticipanteNombre(nuevoUsuario.getNombre());
 		participanteService.postParticipante(participante);	
 		return nuevoUsuario;		
 	}

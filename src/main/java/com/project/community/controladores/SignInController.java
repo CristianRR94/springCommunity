@@ -2,9 +2,7 @@ package com.project.community.controladores;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.community.DTO.UsuarioEntradaDTO;
 import com.project.community.DTO.UsuarioSalidaDTO;
-import com.project.community.entidades.Participante;
 import com.project.community.entidades.Usuario;
 import com.project.community.mapper.UsuarioMapper;
-import com.project.community.servicios.UsuarioParticipanteServiceImpl;
-import com.project.community.servicios.UsuarioServiceImpl;
+import com.project.community.servicios.UsuarioParticipanteService;
+import com.project.community.servicios.UsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -31,15 +27,15 @@ import jakarta.validation.Valid;
 @RequestMapping("/usuario")
 public class SignInController {
 	
-	@Autowired
-	private final UsuarioServiceImpl usuarioService;
-	private final UsuarioParticipanteServiceImpl usuarioParticipanteService;
+
+	private final UsuarioService usuarioService;
+	private final UsuarioParticipanteService usuarioParticipanteService;
 	private final UsuarioMapper usuarioMapper;
 	
 	
 	public SignInController(UsuarioMapper usuarioMapper, 
-			UsuarioParticipanteServiceImpl usuarioParticipanteService, 
-			UsuarioServiceImpl usuarioService) {
+			UsuarioParticipanteService usuarioParticipanteService, 
+			UsuarioService usuarioService) {
 		this.usuarioMapper = usuarioMapper;
 		this.usuarioParticipanteService = usuarioParticipanteService;
 		this.usuarioService = usuarioService;
@@ -52,9 +48,12 @@ public class SignInController {
 	}
 	
 	@GetMapping("{id}")
-	public UsuarioSalidaDTO getUsuario(@PathVariable Long id) {
+	public ResponseEntity<UsuarioSalidaDTO> getUsuario(@PathVariable Long id) {
 		Usuario usuario = usuarioService.getUsuario(id);
-		return usuarioMapper.toSalidaDTO(usuario);
+		 if(usuario == null) {
+		        return ResponseEntity.notFound().build();
+		    }
+		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));
 	}
 	
 	@DeleteMapping("delete/{id}")
@@ -63,40 +62,23 @@ public class SignInController {
 	}
 	
 	@PutMapping("modificar/{id}")
-	public Usuario putUsuario(@RequestBody UsuarioEntradaDTO usuario, @PathVariable Long id, String nombre) {
+	public ResponseEntity<UsuarioSalidaDTO> putUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO, @PathVariable Long id) {	
+		Usuario usuario = usuarioParticipanteService.modNombreUsuarioParticipante(id, usuarioDTO.getNombre());
+		if(usuario == null) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));	
+	}
+	
+	@PostMapping("crear")
+	public ResponseEntity<UsuarioSalidaDTO> postUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO){
+		Usuario usuarioEntrada = usuarioMapper.toUsuarioEntrada(usuarioDTO);
+		Usuario usuario = usuarioParticipanteService.createUsuarioParticipante(usuarioEntrada);
+		if(usuario == null) {
+			return ResponseEntity.badRequest().build();
+		}
+		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));
 		
-		usuarioParticipanteService.modNombreUsuarioParticipante(id, nombre);
-		return usuarioMapper.toUsuarioEntrada(usuario);
-		
-	}
-//	@GetMapping
-//	public Iterable<Usuario> getUsuarios() {
-//		return usuarioService.getUsuarios();
-//	}
-//	
-//	@GetMapping("{id}")
-//	public Usuario getUsuario(@PathVariable Long id) {
-//		return usuarioService.getUsuario(id);
-//	}
-	
-	/*@PostMapping
-	public Usuario postUsuario(@RequestBody Usuario usuario) {
-		return usuarioService.postUsuario(usuario);
-	}*/
-	
-	@PostMapping
-	public Usuario postUsuario(@RequestBody Usuario usuario) {
-		return usuarioParticipanteService.createUsuarioParticipante(usuario, new Participante());
 	}
 	
-	@PutMapping("put/{id}")
-	public Usuario putUsuario(@RequestBody Usuario usuario) {
-
-		return usuarioService.putUsuario(usuario);
-	}
-	
-	@DeleteMapping("delete/{id}")
-	public void deleteUsuario(Usuario usuario) {
-		usuarioService.deleteUsuario(usuario.getId());
-	}
 }

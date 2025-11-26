@@ -69,4 +69,11 @@ public class Participante extends TimestampEntity {
 		}
 		this.nombreParticipante = nombre;
 	}
+	
+	public Long obtenerIdUsuario() {
+		if(this.usuario ==null) {
+			throw new IllegalStateException("El participante no tiene usuario asociado");
+		}
+		return this.usuario.getId();
+	}
 }

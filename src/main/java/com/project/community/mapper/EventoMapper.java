@@ -10,6 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.project.community.DTO.EventoDTO;
+import com.project.community.DTO.EventoPrincipalDTO;
 import com.project.community.entidades.Evento;
 import com.project.community.entidades.Participante;
 
@@ -40,5 +41,18 @@ public interface EventoMapper {
 	List<EventoDTO> toDTOs(List<Evento> eventos);
 	List<Evento> toEventos(List<EventoDTO> eventoDTOs);
 	
+	EventoPrincipalDTO toPrincipalDTO(Evento evento);
+	@Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "participantesEvento", ignore=true)
+	@Mapping(target = "administradores", ignore=true)
+	@Mapping(target = "chat", ignore=true)
+	@Mapping(target = "maxNumParticipantes", ignore=true)
+	@Mapping(target = "oculto", ignore=true)
+	@Mapping(target = "privado", ignore=true)
+	@Mapping(target = "informacion", ignore=true)
+	Evento toEventoPrincipal(EventoPrincipalDTO eventoDTO);
+	List<Evento> toEventoPrincipalList(List<EventoPrincipalDTO> eventoDTO);
+	List<EventoPrincipalDTO> toPrincipalDTOList(List<Evento> eventos);
 	
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.community.DTO.EventoDTO;
+import com.project.community.DTO.EventoPrincipalDTO;
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
 //import com.project.community.config.LocalDateTimeAdapter;
@@ -68,9 +69,9 @@ public class EventoController {
 	}
 	
 	@GetMapping
-	public List<EventoDTO> getEventos(){
+	public List<EventoPrincipalDTO> getEventos(){
 		List<Evento> eventos = eventoService.getEventos();
-		return eventoMapper.toDTOs(eventos);
+		return eventoMapper.toPrincipalDTOList(eventos);
 	}
 
 	@DeleteMapping("delete/{id}")
