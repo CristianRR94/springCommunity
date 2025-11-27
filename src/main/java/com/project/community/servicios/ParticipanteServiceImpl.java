@@ -57,5 +57,9 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 		 participante.cambiarNombreParticipante(nombre);
 		 participanteRepository.save(participante);
 	}
+	
+//	public Iterable<Participante> getAmigos(){
+//		
+//	}
 
 }

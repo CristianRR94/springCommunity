@@ -22,7 +22,11 @@ public class EventoServiceImpl implements EventoService{
 	@Transactional(readOnly = true)
 	public Evento getEvento(Long id) {
 
-		return eventoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Evento no encontrado con id: " + id));
+		Evento evento = eventoRepository.findById(id).orElseThrow(
+				() -> new IllegalArgumentException("Evento no encontrado con id: " + id)
+				);
+
+		return evento;
 	}
 
 	@Override

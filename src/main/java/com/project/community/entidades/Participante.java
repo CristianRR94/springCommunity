@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -52,8 +53,13 @@ public class Participante extends TimestampEntity {
 	@Builder.Default
 	private Set<Evento> eventosAdministrados = new HashSet<>();
 	
-	//private LocalDateTime created_at;
-	//private LocalDateTime updated_at;
+	@ManyToMany
+	@JoinTable(
+			name="participante_amigos",
+			joinColumns = @JoinColumn(name="participante_id"),
+			inverseJoinColumns = @JoinColumn(name= "amigo_id"))
+	@Builder.Default
+	private Set<Participante> amigos = new HashSet<>();
 	
 	@OneToOne
 	@JoinColumn(name = "usuario_id")

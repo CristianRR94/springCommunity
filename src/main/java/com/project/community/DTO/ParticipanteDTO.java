@@ -1,6 +1,7 @@
 package com.project.community.DTO;
 
 import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +15,6 @@ public class ParticipanteDTO {
 	private String nombreParticipante;
 	private List<Long> eventosId;
 	private List<Long> eventosAdministradosId;
+	private Set<Long> amigosId;
 	private Long usuarioId;
 }
