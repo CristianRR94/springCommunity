@@ -21,7 +21,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 	@Transactional
 	public Usuario createUsuarioParticipante(Usuario usuario) {
 		Usuario nuevoUsuario = usuarioService.postUsuario(usuario);
-		Participante participante = participanteService.crearParticipanteNombre(nuevoUsuario.getNombre());
+		Participante participante = participanteService.crearParticipanteNombreUsuario(nuevoUsuario.getNombre(), nuevoUsuario);
 		participanteService.postParticipante(participante);	
 		return nuevoUsuario;		
 	}

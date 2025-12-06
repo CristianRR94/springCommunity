@@ -7,15 +7,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.community.entidades.Evento;
+import com.project.community.entidades.Participante;
 import com.project.community.repositorios.EventoRepository;
 
 @Service
 public class EventoServiceImpl implements EventoService{
 	
 	private final EventoRepository eventoRepository;
+	private final AuthDataService authDataService;
 	
-	public EventoServiceImpl(EventoRepository eventoRepository) {
+	public EventoServiceImpl(EventoRepository eventoRepository, AuthDataService authDataService) {
 		this.eventoRepository = eventoRepository;
+		this.authDataService = authDataService;
 	}
 	
 	@Override
@@ -39,7 +42,9 @@ public class EventoServiceImpl implements EventoService{
 	@Override
 	@Transactional
 	public Evento postEvento(Evento evento) {
-
+		Participante participante = authDataService.obtenerParticipanteAutenticado();
+		evento.addParticipante(participante);
+		evento.addAdministrador(participante);
 		return eventoRepository.save(evento);
 	}
 

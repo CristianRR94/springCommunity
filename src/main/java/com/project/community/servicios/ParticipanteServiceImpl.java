@@ -1,10 +1,13 @@
 package com.project.community.servicios;
 
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
-
 import com.project.community.entidades.Participante;
+import com.project.community.entidades.Usuario;
 import com.project.community.repositorios.ParticipanteRepository;
 @Service
 public class ParticipanteServiceImpl implements ParticipanteService{
@@ -27,7 +30,7 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 	}
 
 	@Override
-	public Iterable<Participante> getParticipantes() {
+	public List<Participante> getParticipantes() {
 		
 		return participanteRepository.findAll();
 	}
@@ -48,8 +51,8 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 		return participanteRepository.findByUsuarioId(id);
 	}
 	
-	public Participante crearParticipanteNombre(String nombre) {
-		return Participante.builder().nombreParticipante(nombre).build();
+	public Participante crearParticipanteNombreUsuario(String nombre, Usuario usuario) {
+		return Participante.builder().nombreParticipante(nombre).usuario(usuario).build();
 	}
 	
 	public void cambiarParticipanteNombre(String nombre, Long UsuarioId) {
@@ -58,8 +61,10 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 		 participanteRepository.save(participante);
 	}
 	
-//	public Iterable<Participante> getAmigos(){
-//		
-//	}
+	public Set<Participante> getAmigos(Long id){
+		Participante participante = participanteRepository.findById(id).orElse(null);
+		return participante.getAmigos();
+	}
+		
 
 }

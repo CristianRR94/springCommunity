@@ -2,7 +2,11 @@ package com.project.community.servicios;
 
 
 
+import java.util.List;
+import java.util.Set;
+
 import com.project.community.entidades.Participante;
+import com.project.community.entidades.Usuario;
 
 public interface ParticipanteService {
 
@@ -10,7 +14,7 @@ public interface ParticipanteService {
 	
 	public Participante postParticipante(Participante participante);
 	
-	public Iterable<Participante> getParticipantes();
+	public List<Participante> getParticipantes();
 	
 	public Participante putParticipante(Participante participante);
 	
@@ -22,7 +26,9 @@ public interface ParticipanteService {
 	
 	//public Participante postNameParticipante(Participante participante, String name);
 	
-	public Participante crearParticipanteNombre(String nombre);
+	public Participante crearParticipanteNombreUsuario(String nombre, Usuario usuario);
 	
 	public void cambiarParticipanteNombre(String nombre, Long usuarioId);
+	
+	public Set<Participante> getAmigos(Long id);
 }

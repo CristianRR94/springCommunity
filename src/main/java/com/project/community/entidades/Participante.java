@@ -82,4 +82,5 @@ public class Participante extends TimestampEntity {
 		}
 		return this.usuario.getId();
 	}
+
 }
