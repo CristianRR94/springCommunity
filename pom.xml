@@ -11,7 +11,7 @@
 	<groupId>com.project</groupId>
 	<artifactId>community</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>community</name>
 	<description>API for Angular community</description>
 	<url/>
@@ -112,18 +112,22 @@
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-api</artifactId>
-		    <version>0.12.5</version>
+		    <version>0.12.6</version>
 		</dependency>
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-impl</artifactId>
-		    <version>0.12.5</version>
+		    <version>0.12.6</version>
 		</dependency>
 		<dependency>
 		    <groupId>io.jsonwebtoken</groupId>
 		    <artifactId>jjwt-jackson</artifactId>
-		    <version>0.12.5</version>
+		    <version>0.12.6</version>
 		</dependency>
+		<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-oauth2-client</artifactId>
+</dependency>
 		<dependency>
     <groupId>org.springframework.security</groupId>
     <artifactId>spring-security-oauth2-authorization-server</artifactId>

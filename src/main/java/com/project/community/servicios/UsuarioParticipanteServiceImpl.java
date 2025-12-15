@@ -4,26 +4,33 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.community.controladores.TokenResponse;
 import com.project.community.entidades.Participante;
+import com.project.community.entidades.Token;
 import com.project.community.entidades.Usuario;
+import com.project.community.repositorios.TokenRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteService{
 	private final UsuarioService usuarioService;
 	private final ParticipanteService participanteService;
+	private final TokenRepository tokenRepository;
+	private final JwtService jwtService;
 	
-	public UsuarioParticipanteServiceImpl(UsuarioService usuarioService, ParticipanteService participanteService) {
-		this.usuarioService = usuarioService;
-		this.participanteService = participanteService;
-	}
-
+	
 	@Override
 	@Transactional
-	public Usuario createUsuarioParticipante(Usuario usuario) {
+	public TokenResponse createUsuarioParticipante(Usuario usuario) {
 		Usuario nuevoUsuario = usuarioService.postUsuario(usuario);
 		Participante participante = participanteService.crearParticipanteNombreUsuario(nuevoUsuario.getNombre(), nuevoUsuario);
 		participanteService.postParticipante(participante);	
-		return nuevoUsuario;		
+		String jwtToken = jwtService.generateToken(nuevoUsuario);
+		String refreshToken = jwtService.generateRefreshToken(nuevoUsuario);
+		guardarUsuarioToken(nuevoUsuario, jwtToken);
+		return new TokenResponse(jwtToken, refreshToken);		
 	}
 
 	@Override
@@ -62,4 +69,22 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 		usuarioService.putUsuario(usuario);
 		return usuario;
 		}
+
+	@Override
+	public void guardarUsuarioToken(Usuario usuario, String jwtToken) {
+		var token = Token.builder()
+				.usuario(usuario)
+				.token(jwtToken)
+				.tokenType(Token.TokenType.BEARER)
+				.expired(false)
+				.revoked(false)
+				.build();
+		tokenRepository.save(token);
+	}
+	
+	public TokenResponse refreshToken(final String authHeader) {
+		return null;
+	}
+	
+	
 }

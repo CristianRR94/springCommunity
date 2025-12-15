@@ -1,0 +1,58 @@
+package com.project.community.servicios;
+
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.project.community.entidades.Usuario;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+
+@Service
+public class JwtServiceImpl implements JwtService{
+
+	@Value("${jwt.secret}")
+	private String secretKey;
+	@Value("${jwt.expiration}")
+	private Long jwtExpiration;
+	@Value("${jwt.refresh.expiration}")
+	private Long refreshExpiration;
+	
+	@Override
+	public String generateToken(final Usuario usuario) {
+
+		return buildToken(usuario, jwtExpiration);
+	}
+
+	@Override
+	public String generateRefreshToken(final Usuario usuario) {
+
+		return buildToken(usuario, refreshExpiration);
+	}
+
+	
+	private String buildToken(final Usuario usuario, Long expiration) {
+
+		return Jwts.builder()
+				.id(usuario.getId().toString())
+				.claims(Map.of("nombre", usuario.getNombre()))
+				.subject(usuario.getEmail())
+				.issuedAt(new Date(System.currentTimeMillis()))
+				.expiration(new Date(System.currentTimeMillis() + expiration))
+				.signWith(getSigninKey())
+				.compact();
+	}
+	
+	private SecretKey getSigninKey() {
+		
+		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+		return Keys.hmacShaKeyFor(keyBytes);
+	}
+}

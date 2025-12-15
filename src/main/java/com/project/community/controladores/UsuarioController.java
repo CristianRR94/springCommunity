@@ -2,6 +2,8 @@ package com.project.community.controladores;
 
 import java.util.List;
 
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import com.project.community.DTO.UsuarioEntradaDTO;
 import com.project.community.DTO.UsuarioSalidaDTO;
@@ -21,11 +25,13 @@ import com.project.community.servicios.UsuarioParticipanteService;
 import com.project.community.servicios.UsuarioService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/usuario")
-public class SignInController {
+@RequiredArgsConstructor
+public class UsuarioController {
 	
 
 	private final UsuarioService usuarioService;
@@ -33,13 +39,7 @@ public class SignInController {
 	private final UsuarioMapper usuarioMapper;
 	
 	
-	public SignInController(UsuarioMapper usuarioMapper, 
-			UsuarioParticipanteService usuarioParticipanteService, 
-			UsuarioService usuarioService) {
-		this.usuarioMapper = usuarioMapper;
-		this.usuarioParticipanteService = usuarioParticipanteService;
-		this.usuarioService = usuarioService;
-	}
+
 	
 	@GetMapping
 	public List<UsuarioSalidaDTO> getUsuarios(){
@@ -71,14 +71,29 @@ public class SignInController {
 	}
 	
 	@PostMapping("crear")
-	public ResponseEntity<UsuarioSalidaDTO> postUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO){
+	public ResponseEntity<TokenResponse> postUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO){
 		Usuario usuarioEntrada = usuarioMapper.toUsuarioEntrada(usuarioDTO);
-		Usuario usuario = usuarioParticipanteService.createUsuarioParticipante(usuarioEntrada);
-		if(usuario == null) {
+		TokenResponse token = usuarioParticipanteService.createUsuarioParticipante(usuarioEntrada);
+		if(token == null) {
 			return ResponseEntity.badRequest().build();
 		}
-		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));
+	
+		return ResponseEntity.ok(token);
 		
 	}
+	
+	//esto va de autenticar
+//	@PostMapping("/login")
+//	public ResponseEntity<TokenResponse> authenticate(@RequestBody final LoginRequest request) {
+//		final TokenResponse token = service.register(request);
+//		return ResponseEntity.ok(token);
+//	}
+//
+//	//esto va de token
+//	@PostMapping("/refresh")
+//	public ResponseEntity<TokenResponse> refresh(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
+//
+//		return service.refreshToken(authHeader);
+//	}
 	
 }
