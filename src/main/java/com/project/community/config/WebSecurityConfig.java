@@ -4,17 +4,22 @@ import java.util.List;
 
 
 
+
 import org.springframework.context.annotation.Bean;
 
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,9 +28,17 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.project.community.entidades.Usuario;
+import com.project.community.repositorios.UsuarioRepository;
+
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+	
+	private final UsuarioRepository usuarioRepo;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -75,15 +88,26 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    
-  //probar sin security
-//    @Bean
-//    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        return http
-//            .csrf(csrf -> csrf.disable())
-//            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-//            .build();
-//    }
+    @Bean
+     UserDetailsService userDetailsService() {
+    	return username -> {
+    		final Usuario usuario = usuarioRepo.findByEmail(username);
+    		if(usuario == null) {
+    			throw new UsernameNotFoundException("Usuario no encontrado");
+    		}
+    			return User.builder()
+    	    			.username(usuario.getEmail())
+    	    			.password(usuario.getPassword())
+    	    			.build();
+    		
+    	};
+    }
+    //para desencriptar password
+    @Bean AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService) {
+    	DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+    	authProvider.setPasswordEncoder(passwordEncoder());
+    	return authProvider;
+    }
 //
 //    @Bean
 //    PasswordEncoder passwordEncoder() {

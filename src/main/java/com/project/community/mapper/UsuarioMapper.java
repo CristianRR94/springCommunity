@@ -15,6 +15,7 @@ public interface UsuarioMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "rol", ignore = true)
+	@Mapping(target = "tokens", ignore = true)
 	Usuario toUsuarioSalida(UsuarioSalidaDTO usuarioSalidaDTOs);
 	List<UsuarioSalidaDTO> toSalidaDTOs(List<Usuario> usuarios);
 	List<Usuario> toUsuarioSalidas(List<UsuarioSalidaDTO> usuarioSalidaDTOs);
@@ -22,6 +23,7 @@ public interface UsuarioMapper {
 	UsuarioEntradaDTO toEntradaDTO(Usuario usuario);
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "rol", ignore = true)
+	@Mapping(target = "tokens", ignore = true)
 	Usuario toUsuarioEntrada(UsuarioEntradaDTO usuarioEntradaDTO);
 	List<UsuarioEntradaDTO> toEntradaDTOs(List<Usuario> usuarios);
 	List<Usuario> toUsuarioEntradas(List<UsuarioEntradaDTO> usuarioEntradaDTO);
