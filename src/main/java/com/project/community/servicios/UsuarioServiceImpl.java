@@ -25,6 +25,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 	private final UsuarioRepository usuarioRepository;
 	private final JwtService jwtService;
 	private final TokenRepository tokenRepository;
+
 	
 	
 
@@ -68,10 +69,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 	public TokenResponse login(Usuario usuario) {
 		authManager.authenticate(
 				new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getPassword()));
-		Usuario usuarioLogin = usuarioRepository.findByEmail(usuario.getEmail());
-		if(usuarioLogin == null) {
-			throw new UsernameNotFoundException("Usuario no encontrado");
-		}
+		Usuario usuarioLogin = usuarioRepository.findByEmail(usuario.getEmail()).orElseThrow(()->
+				new UsernameNotFoundException("Usuario no encontrado"));
 		String jwtToken = jwtService.generateToken(usuarioLogin);
 		String refreshToken = jwtService.generateRefreshToken(usuarioLogin);
 		revokeAllUserTokens(usuarioLogin);
@@ -89,10 +88,6 @@ public class UsuarioServiceImpl implements UsuarioService{
 		}
 	}
 
-	@Override
-	public TokenResponse refresh() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }

@@ -15,4 +15,6 @@ public interface UsuarioParticipanteService {
 	public Usuario modNombreUsuarioParticipante(Long id, String nuevoNombre);
 	
 	public void guardarUsuarioToken(Usuario usuario, String jwtToken);
+	
+	public TokenResponse refresh(final String authHeader);
 }

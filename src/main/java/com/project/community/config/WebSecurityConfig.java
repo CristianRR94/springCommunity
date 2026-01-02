@@ -2,28 +2,18 @@ package com.project.community.config;
 
 import java.util.List;
 
-
-
-
 import org.springframework.context.annotation.Bean;
-
-
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -39,31 +29,6 @@ import lombok.RequiredArgsConstructor;
 public class WebSecurityConfig {
 	
 	private final UsuarioRepository usuarioRepo;
-
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    	HttpSessionSecurityContextRepository repo = new HttpSessionSecurityContextRepository();
-        return http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors->{})
-            .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/api/login").permitAll();
-                auth.requestMatchers("/usuario/**").permitAll(); 
-                auth.anyRequest().authenticated();
-            })
-            .securityContext(securityContext -> securityContext.securityContextRepository(repo)
-            		)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-            		)
-            .formLogin(AbstractHttpConfigurer::disable)
-            .logout(logout -> logout
-                .logoutUrl("/api/logout")
-                .logoutSuccessHandler((req, res, auth) -> res.setStatus(200))
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-            )
-            .build();
-    }
     
     //permitir peticiones
     @Bean
@@ -91,10 +56,9 @@ public class WebSecurityConfig {
     @Bean
      UserDetailsService userDetailsService() {
     	return username -> {
-    		final Usuario usuario = usuarioRepo.findByEmail(username);
-    		if(usuario == null) {
-    			throw new UsernameNotFoundException("Usuario no encontrado");
-    		}
+    		final Usuario usuario = usuarioRepo.findByEmail(username)
+    				.orElseThrow(()->
+    		new UsernameNotFoundException("User not found"));
     			return User.builder()
     	    			.username(usuario.getEmail())
     	    			.password(usuario.getPassword())

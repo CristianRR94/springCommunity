@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.community.entidades.Usuario;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -54,5 +55,36 @@ public class JwtServiceImpl implements JwtService{
 		
 		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
 		return Keys.hmacShaKeyFor(keyBytes);
+	}
+
+	@Override
+	public String extractUsername(String token) {
+		final Claims jwtToken = Jwts.parser()
+				.verifyWith(getSigninKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
+		return jwtToken.getSubject();
+	}
+
+	@Override
+	public boolean isTokenValid(String token, Usuario usuario) {
+		final String username = extractUsername(token);
+		return (username.equals(usuario.getEmail())) && !isTokenExpired(token);
+	}
+
+	@Override
+	public boolean isTokenExpired(String token) {
+		return extractExpiration(token).before(new Date());
+	}
+
+	@Override
+	public Date extractExpiration(String token) {
+		final Claims jwtToken = Jwts.parser()
+				.verifyWith(getSigninKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
+		return jwtToken.getExpiration();
 	}
 }
