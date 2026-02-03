@@ -2,6 +2,7 @@ package com.project.community.servicios;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.project.community.entidades.Participante;
@@ -24,8 +25,8 @@ public Usuario obtenerUsuarioAutenticado() {
 	if(auth == null) {
 		throw new IllegalStateException("No hay usuario autenticado");
 	}
-	String nombre = auth.getName();
-	Usuario usuario = usuarioRepository.findByNombre(nombre);
+	String email = auth.getName(); //devuelve email
+	Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("No existe el email: " + email));
 	return usuario;
 }
 

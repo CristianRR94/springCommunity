@@ -87,6 +87,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 		tokenRepository.save(token);
 	}
 	
+	@Override
 	public TokenResponse refreshToken(final String authHeader) {
 		return null;
 	}
@@ -104,7 +105,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 		final Usuario usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(
 				()->new UsernameNotFoundException(userEmail));
 		if(!jwtService.isTokenValid(refreshToken, usuario)) {
-			throw new IllegalArgumentException("Ivalid bearer token");
+			throw new IllegalArgumentException("Ivalid refresh token");
 		}
 		final String accessToken = jwtService.generateToken(usuario);
 		revokeAllUserTokens(usuario);

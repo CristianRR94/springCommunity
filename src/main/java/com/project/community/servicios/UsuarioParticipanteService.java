@@ -17,4 +17,6 @@ public interface UsuarioParticipanteService {
 	public void guardarUsuarioToken(Usuario usuario, String jwtToken);
 	
 	public TokenResponse refresh(final String authHeader);
+	
+	public TokenResponse refreshToken(final String authHeader);
 }
