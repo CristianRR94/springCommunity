@@ -41,6 +41,7 @@ public class AppConfig {
     			return User.builder()
     	    			.username(usuario.getEmail())
     	    			.password(usuario.getPassword())
+    	    			.roles(usuario.getRol()) //cuidado
     	    			.build();
     		
     	};

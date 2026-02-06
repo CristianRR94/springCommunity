@@ -75,7 +75,7 @@ public class UsuarioController {
 
 
 	// esto va de token
-	@PostMapping("/refresh")
+	@PostMapping("refresh")
 	public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
 
 		return usuarioParticipanteService.refresh(authHeader);

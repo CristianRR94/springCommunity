@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 @Data
@@ -64,6 +65,8 @@ public class Participante extends TimestampEntity {
 	@OneToOne
 	@JoinColumn(name = "usuario_id")
 	@JsonIgnoreProperties({"password", "email"})
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	private Usuario usuario;
 	
 	public void cambiarNombreParticipante(String nombre) {

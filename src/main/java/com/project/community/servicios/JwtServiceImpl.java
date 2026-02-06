@@ -73,11 +73,10 @@ public class JwtServiceImpl implements JwtService{
 		return (username.equals(usuario.getEmail())) && !isTokenExpired(token);
 	}
 
-	@Override
-	public boolean isTokenExpired(String token) {
+	private boolean isTokenExpired(final String token) {
 		return extractExpiration(token).before(new Date());
 	}
-
+	
 	@Override
 	public Date extractExpiration(String token) {
 		final Claims jwtToken = Jwts.parser()
@@ -87,4 +86,6 @@ public class JwtServiceImpl implements JwtService{
 				.getPayload();
 		return jwtToken.getExpiration();
 	}
+	
+
 }

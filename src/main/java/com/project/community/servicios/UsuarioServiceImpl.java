@@ -14,6 +14,7 @@ import com.project.community.entidades.Usuario;
 import com.project.community.repositorios.TokenRepository;
 import com.project.community.repositorios.UsuarioRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -74,7 +75,29 @@ public class UsuarioServiceImpl implements UsuarioService{
 		String jwtToken = jwtService.generateToken(usuarioLogin);
 		String refreshToken = jwtService.generateRefreshToken(usuarioLogin);
 		revokeAllUserTokens(usuarioLogin);
+		
+		saveUsuarioToken(usuarioLogin, jwtToken);
 		return new TokenResponse(jwtToken, refreshToken);
+	}
+	
+	@Override
+	@Transactional
+	public void logout(String token) {
+		var tokenGuardado = tokenRepository.findByToken(token)
+				.orElseThrow(()-> new RuntimeException("Token no encontrado"));
+		tokenGuardado.setExpired(true);
+		tokenGuardado.setRevoked(true);
+	}
+	
+	private void saveUsuarioToken(Usuario usuario, String jwtToken) {
+		var token = Token.builder()
+				.usuario(usuario)
+				.token(jwtToken)
+				.tokenType(Token.TokenType.BEARER)
+				.expired(false)
+				.revoked(false)
+				.build();
+		tokenRepository.save(token);
 	}
 
 	private void revokeAllUserTokens(final Usuario usuario) {

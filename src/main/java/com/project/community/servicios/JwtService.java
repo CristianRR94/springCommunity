@@ -18,7 +18,7 @@ public interface JwtService {
 	
 	public boolean isTokenValid(final String token, final Usuario usuario);
 	
-	public boolean isTokenExpired(final String token);
+//	public boolean isTokenExpired(final String token);
 	
 	
 }

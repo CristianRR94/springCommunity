@@ -31,7 +31,7 @@ public class Token {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(unique = true)
+	@Column(unique = true, length = 1000)
 	private String token;
 	
 	@Builder.Default

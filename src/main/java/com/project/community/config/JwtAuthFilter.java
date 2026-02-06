@@ -35,8 +35,11 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 	private final UsuarioRepository usuarioRepository;
 	
 	@Override
-	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
-			throws ServletException, IOException {
+	protected void doFilterInternal(
+			@NonNull HttpServletRequest request, 
+			@NonNull HttpServletResponse response, 
+			@NonNull FilterChain filterChain
+	) throws ServletException, IOException {
 		if(request.getServletPath().contains("/auth")) { //comprobar
 			filterChain.doFilter(request, response);
 			return;
@@ -50,6 +53,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		final String jwtToken = authHeader.substring(7);
 		final String userEmail = jwtService.extractUsername(jwtToken);
 		if(userEmail == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+			filterChain.doFilter(request, response);
 			return;
 		}
 		
@@ -68,6 +72,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		}
 		final boolean isTokenValid = jwtService.isTokenValid(jwtToken, usuario.get());
 		if(!isTokenValid) {
+			filterChain.doFilter(request, response);
 			return;
 		}
 		

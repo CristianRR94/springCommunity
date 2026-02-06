@@ -49,8 +49,10 @@ public class WebSecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http
 		.csrf(csrf->csrf.disable())
-		.cors(cors->cors.disable())
+		.cors(cors->corsConfigurationSource())
 		.authorizeHttpRequests(req -> req.requestMatchers("/auth/**")
+				.permitAll()
+				.requestMatchers("/api/usuarios/refresh")
 				.permitAll()
 				.anyRequest()
 				.authenticated()

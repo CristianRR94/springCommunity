@@ -18,5 +18,5 @@ public interface UsuarioParticipanteService {
 	
 	public TokenResponse refresh(final String authHeader);
 	
-	public TokenResponse refreshToken(final String authHeader);
+
 }
