@@ -21,6 +21,7 @@ import com.project.community.DTO.UsuarioEntradaDTO;
 import com.project.community.DTO.UsuarioSalidaDTO;
 import com.project.community.entidades.Usuario;
 import com.project.community.mapper.UsuarioMapper;
+import com.project.community.servicios.AuthDataService;
 import com.project.community.servicios.UsuarioParticipanteService;
 import com.project.community.servicios.UsuarioService;
 
@@ -29,17 +30,16 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @CrossOrigin("http://localhost:4200")
-@RequestMapping("/usuario")
+@RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
 	
-
+//zona privada
 	private final UsuarioService usuarioService;
 	private final UsuarioParticipanteService usuarioParticipanteService;
 	private final UsuarioMapper usuarioMapper;
+	private final AuthDataService authDataService;
 	
-	
-
 	
 	@GetMapping
 	public List<UsuarioSalidaDTO> getUsuarios(){
@@ -56,46 +56,30 @@ public class UsuarioController {
 		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));
 	}
 	
-	@DeleteMapping("delete/{id}")
-	public void deleteUsuario(@PathVariable Long id) {
+	@DeleteMapping("delete")
+	public void deleteUsuario() {
+		Long id = authDataService.obtenerUsuarioAutenticado().getId();
 		usuarioParticipanteService.deleteUsuarioParticipante(id);
 	}
 	
-	@PutMapping("modificar/{id}")
-	public ResponseEntity<UsuarioSalidaDTO> putUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO, @PathVariable Long id) {	
-		Usuario usuario = usuarioParticipanteService.modNombreUsuarioParticipante(id, usuarioDTO.getNombre());
+	@PutMapping("modificar")
+	public ResponseEntity<UsuarioSalidaDTO> putUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO) {	
+		Long idUsuario = authDataService.obtenerUsuarioAutenticado().getId();
+		Usuario usuario = usuarioParticipanteService.modNombreUsuarioParticipante(idUsuario, usuarioDTO.getNombre());
 		if(usuario == null) {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));	
 	}
 	
-	@PostMapping("crear")
-	public ResponseEntity<TokenResponse> postUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO){
-		Usuario usuarioEntrada = usuarioMapper.toUsuarioEntrada(usuarioDTO);
-		TokenResponse token = usuarioParticipanteService.createUsuarioParticipante(usuarioEntrada);
-		if(token == null) {
-			return ResponseEntity.badRequest().build();
-		}
-	
-		return ResponseEntity.ok(token);
-		
-	}
-	
-	//esto va de autenticar
-	@PostMapping("/login")
-	public ResponseEntity<TokenResponse> authenticate(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO) {
-		System.out.println("ENTRÓ AL LOGIN");
-		Usuario usuarioEntrada = usuarioMapper.toUsuarioEntrada(usuarioDTO);
-		final TokenResponse token = usuarioService.login(usuarioEntrada);
-		return ResponseEntity.ok(token);
-	}
+
 
 	// esto va de token
 	@PostMapping("/refresh")
 	public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
 
 		return usuarioParticipanteService.refresh(authHeader);
+		
 	}
 	
 }

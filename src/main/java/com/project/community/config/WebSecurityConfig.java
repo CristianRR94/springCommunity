@@ -50,7 +50,7 @@ public class WebSecurityConfig {
 		http
 		.csrf(csrf->csrf.disable())
 		.cors(cors->cors.disable())
-		.authorizeHttpRequests(req -> req.requestMatchers("/usuario/**")  //comprobar 
+		.authorizeHttpRequests(req -> req.requestMatchers("/auth/**")
 				.permitAll()
 				.anyRequest()
 				.authenticated()
