@@ -27,23 +27,36 @@ public class JwtServiceImpl implements JwtService{
 	private Long refreshExpiration;
 	
 	@Override
+	public String extractUsername(final String token) {
+		final Claims jwtToken = Jwts.parser()
+				.verifyWith(getSigninKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
+		return jwtToken.getSubject();
+	}
+	
+	@Override
 	public String generateToken(final Usuario usuario) {
 
-		return buildToken(usuario, jwtExpiration);
+		return buildToken(usuario, jwtExpiration, "ACCESS");
 	}
 
 	@Override
 	public String generateRefreshToken(final Usuario usuario) {
 
-		return buildToken(usuario, refreshExpiration);
+		return buildToken(usuario, refreshExpiration, "REFRESH");
 	}
 
 	
-	private String buildToken(final Usuario usuario, Long expiration) {
+	private String buildToken(final Usuario usuario, final Long expiration, final String type) {
 
 		return Jwts.builder()
 				.id(usuario.getId().toString())
-				.claims(Map.of("nombre", usuario.getNombre()))
+				.claims(Map.of(
+						"nombre", usuario.getNombre(),
+						"tipo", type)
+						)
 				.subject(usuario.getEmail())
 				.issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + expiration))
@@ -58,17 +71,7 @@ public class JwtServiceImpl implements JwtService{
 	}
 
 	@Override
-	public String extractUsername(String token) {
-		final Claims jwtToken = Jwts.parser()
-				.verifyWith(getSigninKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload();
-		return jwtToken.getSubject();
-	}
-
-	@Override
-	public boolean isTokenValid(String token, Usuario usuario) {
+	public boolean isTokenValid(final String token, final Usuario usuario) {
 		final String username = extractUsername(token);
 		return (username.equals(usuario.getEmail())) && !isTokenExpired(token);
 	}
@@ -78,13 +81,23 @@ public class JwtServiceImpl implements JwtService{
 	}
 	
 	@Override
-	public Date extractExpiration(String token) {
+	public Date extractExpiration(final String token) {
 		final Claims jwtToken = Jwts.parser()
 				.verifyWith(getSigninKey())
 				.build()
 				.parseSignedClaims(token)
 				.getPayload();
 		return jwtToken.getExpiration();
+	}
+
+	@Override
+	public String extractType(String token) {
+		final Claims jwtToken = Jwts.parser()
+				.verifyWith(getSigninKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
+		return jwtToken.get("tipo", String .class);
 	}
 	
 

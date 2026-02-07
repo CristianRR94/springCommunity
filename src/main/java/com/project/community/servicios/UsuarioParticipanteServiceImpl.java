@@ -87,21 +87,28 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 		tokenRepository.save(token);
 	}
 	
+	
 	@Override
 	public TokenResponse refresh(final String authHeader) {
+		//empieza por berarer?
 		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
 			throw new IllegalArgumentException("Ivalid bearer token");
 		}
 		
+		//esta en la base de datos?
 		final String refreshToken = authHeader.substring(7);
 		final String userEmail = jwtService.extractUsername(refreshToken);
 		if(userEmail == null){
-			throw new IllegalArgumentException("Ivalid bearer token");
+			throw new IllegalArgumentException("Invalid refresh token");
+		}
+		
+		final String tipo = jwtService.extractType(refreshToken);
+		if(!"REFRESH".equals(tipo)) {
+			throw new IllegalArgumentException("Invalid token type");
 		}
 		
 		final Usuario usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(
 				()->new UsernameNotFoundException(userEmail));
-		
 		if(!jwtService.isTokenValid(refreshToken, usuario)) {
 			throw new IllegalArgumentException("Invalid refresh token");
 		}
@@ -113,7 +120,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 	}
 	
 	private void revokeAllUserTokens(final Usuario usuario) {
-		final List<Token> validUserTokens = tokenRepository.findAllValidIsFalseOrRevokedIsFalseByUsuarioId(usuario.getId());
+		final List<Token> validUserTokens = tokenRepository.findAllByUsuarioIdAndExpiredIsFalseAndRevokedIsFalse(usuario.getId());
 		if(!validUserTokens.isEmpty()) {
 			for(final Token token : validUserTokens) {
 				token.setExpired(true);

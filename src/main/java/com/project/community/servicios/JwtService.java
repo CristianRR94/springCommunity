@@ -20,5 +20,7 @@ public interface JwtService {
 	
 //	public boolean isTokenExpired(final String token);
 	
+	public String extractType(final String token);
+	
 	
 }
