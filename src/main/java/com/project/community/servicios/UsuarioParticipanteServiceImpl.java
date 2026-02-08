@@ -1,8 +1,5 @@
 package com.project.community.servicios;
 
-import java.util.List;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -12,8 +9,6 @@ import com.project.community.entidades.Participante;
 import com.project.community.entidades.Token;
 import com.project.community.entidades.Usuario;
 import com.project.community.repositorios.TokenRepository;
-import com.project.community.repositorios.UsuarioRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -23,7 +18,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 	private final ParticipanteService participanteService;
 	private final TokenRepository tokenRepository;
 	private final JwtService jwtService;
-	private final UsuarioRepository usuarioRepository;
+
 	
 	
 	@Override
@@ -88,45 +83,4 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 	}
 	
 	
-	@Override
-	public TokenResponse refresh(final String authHeader) {
-		//empieza por berarer?
-		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-			throw new IllegalArgumentException("Ivalid bearer token");
-		}
-		
-		//esta en la base de datos?
-		final String refreshToken = authHeader.substring(7);
-		final String userEmail = jwtService.extractUsername(refreshToken);
-		if(userEmail == null){
-			throw new IllegalArgumentException("Invalid refresh token");
-		}
-		
-		final String tipo = jwtService.extractType(refreshToken);
-		if(!"REFRESH".equals(tipo)) {
-			throw new IllegalArgumentException("Invalid token type");
-		}
-		
-		final Usuario usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(
-				()->new UsernameNotFoundException(userEmail));
-		if(!jwtService.isTokenValid(refreshToken, usuario)) {
-			throw new IllegalArgumentException("Invalid refresh token");
-		}
-		
-		final String accessToken = jwtService.generateToken(usuario);
-		revokeAllUserTokens(usuario);
-		guardarUsuarioToken(usuario, accessToken);
-		return new TokenResponse(accessToken, refreshToken);
-	}
-	
-	private void revokeAllUserTokens(final Usuario usuario) {
-		final List<Token> validUserTokens = tokenRepository.findAllByUsuarioIdAndExpiredIsFalseAndRevokedIsFalse(usuario.getId());
-		if(!validUserTokens.isEmpty()) {
-			for(final Token token : validUserTokens) {
-				token.setExpired(true);
-				token.setRevoked(true);
-			}
-			tokenRepository.saveAll(validUserTokens);
-		}
-	}
 }

@@ -24,4 +24,6 @@ public interface UsuarioService{
 	public TokenResponse login(Usuario usuario);
 	
 	public void logout(String token);
+
+	TokenResponse refresh(String authHeader);
 }

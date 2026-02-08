@@ -77,6 +77,7 @@ public class UsuarioServiceImpl implements UsuarioService{
 		revokeAllUserTokens(usuarioLogin);
 		
 		saveUsuarioToken(usuarioLogin, jwtToken);
+		saveUsuarioToken(usuarioLogin, refreshToken);
 		return new TokenResponse(jwtToken, refreshToken);
 	}
 	
@@ -99,9 +100,48 @@ public class UsuarioServiceImpl implements UsuarioService{
 				.build();
 		tokenRepository.save(token);
 	}
+	
+	@Override
+	public TokenResponse refresh(final String authHeader) {
+		//empieza por berarer?
+		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+			throw new IllegalArgumentException("Ivalid bearer token");
+		}
+		
+		//esta en la base de datos?
+		final String refreshToken = authHeader.substring(7);
+		final String userEmail = jwtService.extractUsername(refreshToken);
+		if(userEmail == null){
+			throw new IllegalArgumentException("Invalid refresh token");
+		}
+		
+		final String tipo = jwtService.extractType(refreshToken);
+		if(!"REFRESH".equals(tipo)) {
+			throw new IllegalArgumentException("Invalid token type");
+		}
+		
+		final Usuario usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(
+				()->new UsernameNotFoundException(userEmail));
+		if(!jwtService.isTokenValid(refreshToken, usuario)) {
+			throw new IllegalArgumentException("Invalid refresh token");
+		}
+		
+		var tokenDB = tokenRepository.findByToken(refreshToken)
+				.orElseThrow(()-> new IllegalArgumentException("Token no registrado"));
+		if(tokenDB.isExpired() || tokenDB.isRevoked()) {
+			throw new IllegalArgumentException("Invalid token");
+		}
+	
+		final String accessToken = jwtService.generateToken(usuario);
+		final String newRefreshToken = jwtService.generateRefreshToken(usuario);
+		revokeAllUserTokens(usuario);
+		saveUsuarioToken(usuario, accessToken);
+		saveUsuarioToken(usuario, newRefreshToken);
+		return new TokenResponse(accessToken, newRefreshToken);
+	}
 
 	private void revokeAllUserTokens(final Usuario usuario) {
-		final List<Token> validUserTokens = tokenRepository.findAllValidIsFalseOrRevokedIsFalseByUsuarioId(usuario.getId());
+		final List<Token> validUserTokens = tokenRepository.findAllByUsuarioIdAndExpiredIsFalseAndRevokedIsFalse(usuario.getId());
 		if(!validUserTokens.isEmpty()) {
 			for(final Token token : validUserTokens) {
 				token.setExpired(true);
