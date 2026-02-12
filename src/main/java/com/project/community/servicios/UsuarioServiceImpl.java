@@ -76,8 +76,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 		String refreshToken = jwtService.generateRefreshToken(usuarioLogin);
 		revokeAllUserTokens(usuarioLogin);
 		
-		saveUsuarioToken(usuarioLogin, jwtToken);
-		saveUsuarioToken(usuarioLogin, refreshToken);
+		saveUsuarioToken(usuarioLogin, jwtToken, "ACCESS" );
+		saveUsuarioToken(usuarioLogin, refreshToken, "REFRESH");
 		return new TokenResponse(jwtToken, refreshToken);
 	}
 	
@@ -90,13 +90,14 @@ public class UsuarioServiceImpl implements UsuarioService{
 		tokenGuardado.setRevoked(true);
 	}
 	
-	private void saveUsuarioToken(Usuario usuario, String jwtToken) {
+	private void saveUsuarioToken(Usuario usuario, String jwtToken, String tipoUso) {
 		var token = Token.builder()
 				.usuario(usuario)
 				.token(jwtToken)
 				.tokenType(Token.TokenType.BEARER)
 				.expired(false)
 				.revoked(false)
+				.tipoUso(tipoUso)
 				.build();
 		tokenRepository.save(token);
 	}
@@ -135,8 +136,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 		final String accessToken = jwtService.generateToken(usuario);
 		final String newRefreshToken = jwtService.generateRefreshToken(usuario);
 		revokeAllUserTokens(usuario);
-		saveUsuarioToken(usuario, accessToken);
-		saveUsuarioToken(usuario, newRefreshToken);
+		saveUsuarioToken(usuario, accessToken, "ACCESS");
+		saveUsuarioToken(usuario, newRefreshToken, "REFRESH");
 		return new TokenResponse(accessToken, newRefreshToken);
 	}
 

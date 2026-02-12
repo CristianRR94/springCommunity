@@ -2,7 +2,12 @@ package com.project.community.entidades;
 
 
 
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -33,8 +38,13 @@ import lombok.ToString;
 
 @Entity
 @Table(name="usuarios")
-public class Usuario extends TimestampEntity{
+public class Usuario extends TimestampEntity implements UserDetails{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -81,6 +91,16 @@ public class Usuario extends TimestampEntity{
 			this.participante.setNombreParticipante(nombre);
 		}
 		this.nombre = nombre;
+	}
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+
+		return List.of(new SimpleGrantedAuthority("Rol: " + rol));
+	}
+	@Override
+	public String getUsername() {
+
+		return email;
 	}
 	
 }

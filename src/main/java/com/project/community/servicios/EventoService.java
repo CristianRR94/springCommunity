@@ -14,4 +14,6 @@ public interface EventoService {
 	public Evento putEvento(Evento evento);
 	
 	public void deleteEvento(Long id);
+	
+	public List<Evento> getEventosPorParticipanteId(Long idParticipante);
 }

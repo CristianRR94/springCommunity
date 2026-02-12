@@ -64,17 +64,18 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			return;
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-		final Optional<Usuario> usuario = usuarioRepository.findByEmail(userDetails.getUsername());
-		
-		if(usuario.isEmpty()) {
-			filterChain.doFilter(request, response);
-			return;
-		}
-		final boolean isTokenValid = jwtService.isTokenValid(jwtToken, usuario.get());
+//		final Optional<Usuario> usuario = usuarioRepository.findByEmail(userDetails.getUsername());
+//		
+//		if(usuario.isEmpty()) {
+//			filterChain.doFilter(request, response);
+//			return;
+//		}
+		final boolean isTokenValid = jwtService.isTokenValid(jwtToken, userDetails);
 		if(!isTokenValid) {
 			filterChain.doFilter(request, response);
 			return;
 		}
+		
 		
 		final var authToken = new UsernamePasswordAuthenticationToken(
 				userDetails, 

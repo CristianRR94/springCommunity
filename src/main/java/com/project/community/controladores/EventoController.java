@@ -2,6 +2,7 @@ package com.project.community.controladores;
 
 import java.util.List;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,7 @@ import com.project.community.DTO.EventoPrincipalDTO;
 //import com.google.gson.GsonBuilder;
 //import com.project.community.config.LocalDateTimeAdapter;
 import com.project.community.entidades.Evento;
+import com.project.community.entidades.Usuario;
 import com.project.community.mapper.EventoMapper;
 import com.project.community.servicios.EventoService;
 import com.project.community.servicios.ImageService;
@@ -28,7 +30,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins="http://localhost:4200")
-@RequestMapping("/evento")
+@RequestMapping("/api/eventos")
 public class EventoController {
 	
 	private final EventoService eventoService;
@@ -45,6 +47,14 @@ public class EventoController {
 	public EventoDTO getEvento(@PathVariable Long id) {
 		Evento evento = eventoService.getEvento(id);
 		return eventoMapper.toDTO(evento);
+	}
+	
+	@GetMapping("/mis-eventos")
+	public List<EventoPrincipalDTO> getEventosPorParticipanteId(Authentication auth){
+		Usuario usuario = (Usuario) auth.getPrincipal();
+		Long idParticipante = usuario.getParticipante().getId();
+		List<Evento> eventos = eventoService.getEventosPorParticipanteId(idParticipante);
+		return eventoMapper.toPrincipalDTOList(eventos);
 	}
 
 	@PostMapping(consumes = "multipart/form-data")
@@ -78,39 +88,5 @@ public class EventoController {
 	public void deleteEvento(Long id) {
 		eventoService.deleteEvento(id);
 	}
-	
-	//uso del entity sin DTO
-	
-//	@GetMapping("{id}")
-//	public Evento getEvento(@PathVariable Long id) {
-//		return eventoService.getEvento(id);
-//	}
-	
-//	@PostMapping(consumes = "multipart/form-data")
-//	public Evento createEvento(
-//			@RequestPart("evento") Evento evento,
-//			@RequestPart(value="image", required=false) MultipartFile imagen 
-//			) {
-//		if(imagen != null && !imagen.isEmpty()) {
-//			String archivo = imageService.postImage(imagen);
-//			evento.setImagenEvento(archivo);
-//		}
-//		return eventoService.postEvento(evento);
-//	}
-	
-//	@PutMapping("modificar/{id}")
-//	public Evento updateEvento(@RequestBody Evento evento) {
-//		return eventoService.putEvento(evento);
-//	}
-	
-//	@GetMapping
-//	public Iterable<Evento>getEventos(){
-//		return eventoService.getEventos();
-//	}
-	
-//	@DeleteMapping("delete/{id}")
-//	public void deleteEvento(Long id) {
-//		eventoService.deleteEvento(id);
-//	}
-	
+
 }

@@ -1,6 +1,7 @@
 package com.project.community.entidades;
 
 import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,8 +43,11 @@ public class Token {
 	
 	private boolean expired;
 	
+	@Column(name = "tipo_uso")
+	private String tipoUso;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
+	
 	
 }

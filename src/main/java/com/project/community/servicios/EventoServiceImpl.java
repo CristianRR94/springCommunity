@@ -62,4 +62,11 @@ public class EventoServiceImpl implements EventoService{
 		eventoRepository.delete(evento);
 	}
 
+	@Override
+	public List<Evento> getEventosPorParticipanteId(Long idParticipante) {
+		
+		return eventoRepository.findByParticipantesEvento_Id(idParticipante);
+	}
+	
+
 }

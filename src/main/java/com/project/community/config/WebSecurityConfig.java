@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -49,7 +50,7 @@ public class WebSecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http
 		.csrf(csrf->csrf.disable())
-		.cors(cors->corsConfigurationSource())
+		.cors(cors->cors.configurationSource(corsConfigurationSource()))
 		.authorizeHttpRequests(req -> req.requestMatchers("/auth/**")
 				.permitAll()
 				.requestMatchers("/api/usuarios/refresh")
@@ -72,16 +73,21 @@ public class WebSecurityConfig {
 		return http.build();
 	}
     
-    private void logout(final String token) {
+    @Transactional
+    public void logout(final String token) {
     	if(token == null || !token.startsWith("Bearer ")) {
     		throw new IllegalArgumentException("Invalid token");
     	}
     	final String jwtToken = token.substring(7);
     	final Token foundToken = tokenRepository.findByToken(jwtToken)
     			.orElseThrow(()-> new IllegalArgumentException("Invalid token"));
-    	foundToken.setExpired(true);
-    	foundToken.setRevoked(true);
-    	tokenRepository.save(foundToken);
+    	List<Token> tokens = tokenRepository
+    			.findAllByUsuarioIdAndExpiredIsFalseAndRevokedIsFalse(foundToken.getUsuario().getId());
+    	for(final Token tokenValid : tokens) {
+    		tokenValid.setExpired(true);
+    		tokenValid.setRevoked(true);
+    	}
+    	tokenRepository.saveAll(tokens);
     }
     
     

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.project.community.entidades.Usuario;
@@ -49,13 +50,13 @@ public class JwtServiceImpl implements JwtService{
 	}
 
 	
-	private String buildToken(final Usuario usuario, final Long expiration, final String type) {
+	private String buildToken(final Usuario usuario, final Long expiration, final String tipo) {
 
 		return Jwts.builder()
 				.id(usuario.getId().toString())
 				.claims(Map.of(
 						"nombre", usuario.getNombre(),
-						"tipo", type)
+						"tipo_uso", tipo)
 						)
 				.subject(usuario.getEmail())
 				.issuedAt(new Date(System.currentTimeMillis()))
@@ -71,9 +72,9 @@ public class JwtServiceImpl implements JwtService{
 	}
 
 	@Override
-	public boolean isTokenValid(final String token, final Usuario usuario) {
+	public boolean isTokenValid(final String token, final UserDetails userDetails) {
 		final String username = extractUsername(token);
-		return (username.equals(usuario.getEmail())) && !isTokenExpired(token);
+		return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 	}
 
 	private boolean isTokenExpired(final String token) {
@@ -97,7 +98,7 @@ public class JwtServiceImpl implements JwtService{
 				.build()
 				.parseSignedClaims(token)
 				.getPayload();
-		return jwtToken.get("tipo", String .class);
+		return jwtToken.get("tipo_uso", String.class);
 	}
 	
 

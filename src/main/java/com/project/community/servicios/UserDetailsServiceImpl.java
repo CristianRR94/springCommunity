@@ -1,6 +1,5 @@
 package com.project.community.servicios;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,11 +23,12 @@ public class UserDetailsServiceImpl implements UserDetailsService{
 		if(usuario == null) {
 			 throw new UsernameNotFoundException("Usuario no encontrado");
 		}
-		return User.builder()
-			    .username(usuario.getNombre())
-			    .password(usuario.getPassword())
-			    .roles(usuario.getRol())
-			    .build();	
+		return usuario;
+//		return User.builder()
+//			    .username(usuario.getNombre())  //cuidado aquí
+//			    .password(usuario.getPassword())
+//			    .roles(usuario.getRol())
+//			    .build();	
 	}
 	
 	

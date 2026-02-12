@@ -35,15 +35,9 @@ public class AppConfig {
     @Bean
      UserDetailsService userDetailsService() {
     	return username -> {
-    		final Usuario usuario = usuarioRepo.findByEmail(username)
+    		return usuarioRepo.findByEmail(username)
     				.orElseThrow(()->
     		new UsernameNotFoundException("User not found"));
-    			return User.builder()
-    	    			.username(usuario.getEmail())
-    	    			.password(usuario.getPassword())
-    	    			.roles(usuario.getRol()) //cuidado
-    	    			.build();
-    		
     	};
     }
     //para desencriptar password

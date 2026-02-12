@@ -10,7 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
-
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 
 //Class to add times to entities
@@ -27,4 +28,16 @@ public abstract class TimestampEntity {
 	  @LastModifiedDate
 	    @Column(name = "updated_at")
 	    private LocalDateTime updatedAt;
+	  
+	  @PrePersist
+	  protected void onCreate() {
+		  LocalDateTime now = LocalDateTime.now();
+		  this.createdAt = now;
+		  
+	  }
+	  
+	  @PreUpdate
+	  protected void onUpdate() {
+		  this.updatedAt = LocalDateTime.now();
+	  }
 }
