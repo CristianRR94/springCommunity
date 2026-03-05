@@ -51,6 +51,7 @@ public class EventoController {
 	
 	@GetMapping("/mis-eventos")
 	public List<EventoPrincipalDTO> getEventosPorParticipanteId(Authentication auth){
+		System.out.println("lista de eventos");
 		Usuario usuario = (Usuario) auth.getPrincipal();
 		Long idParticipante = usuario.getParticipante().getId();
 		List<Evento> eventos = eventoService.getEventosPorParticipanteId(idParticipante);

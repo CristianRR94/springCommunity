@@ -55,6 +55,8 @@ public class WebSecurityConfig {
 				.permitAll()
 				.requestMatchers("/api/usuarios/refresh")
 				.permitAll()
+				.requestMatchers("/api/eventos/**")
+				.authenticated()
 				.anyRequest()
 				.authenticated()
 				)

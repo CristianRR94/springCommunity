@@ -2,11 +2,13 @@ package com.project.community.servicios;
 
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -51,12 +53,16 @@ public class JwtServiceImpl implements JwtService{
 
 	
 	private String buildToken(final Usuario usuario, final Long expiration, final String tipo) {
-
+		List<String> roles = usuario.getAuthorities()
+				.stream()
+				.map(GrantedAuthority::getAuthority)
+				.toList();
 		return Jwts.builder()
 				.id(usuario.getId().toString())
 				.claims(Map.of(
 						"nombre", usuario.getNombre(),
-						"tipo_uso", tipo)
+						"tipo_uso", tipo,
+						"roles", roles)
 						)
 				.subject(usuario.getEmail())
 				.issuedAt(new Date(System.currentTimeMillis()))

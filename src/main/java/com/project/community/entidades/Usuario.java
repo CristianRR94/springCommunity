@@ -95,7 +95,7 @@ public class Usuario extends TimestampEntity implements UserDetails{
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
-		return List.of(new SimpleGrantedAuthority("Rol: " + rol));
+		return List.of(new SimpleGrantedAuthority("ROLE_" + rol.toUpperCase()));
 	}
 	@Override
 	public String getUsername() {

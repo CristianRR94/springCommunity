@@ -1,7 +1,6 @@
 package com.project.community.config;
 
 import java.io.IOException;
-import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
@@ -14,9 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.project.community.entidades.Token;
-import com.project.community.entidades.Usuario;
 import com.project.community.repositorios.TokenRepository;
-import com.project.community.repositorios.UsuarioRepository;
 import com.project.community.servicios.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -32,7 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 	private final JwtService jwtService;
 	private final UserDetailsService userDetailsService;
 	private final TokenRepository tokenRepository;
-	private final UsuarioRepository usuarioRepository;
+
 	
 	@Override
 	protected void doFilterInternal(

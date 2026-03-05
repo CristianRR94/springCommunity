@@ -2,6 +2,7 @@ package com.project.community.mapper;
 
 import java.util.List;
 
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,6 +17,7 @@ public interface UsuarioMapper {
 	@Mapping(target = "password", ignore = true)
 	@Mapping(target = "rol", ignore = true)
 	@Mapping(target = "tokens", ignore = true)
+	@Mapping(target = "participante", ignore = true)
 	Usuario toUsuarioSalida(UsuarioSalidaDTO usuarioSalidaDTOs);
 	List<UsuarioSalidaDTO> toSalidaDTOs(List<Usuario> usuarios);
 	List<Usuario> toUsuarioSalidas(List<UsuarioSalidaDTO> usuarioSalidaDTOs);
@@ -24,6 +26,7 @@ public interface UsuarioMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "rol", ignore = true)
 	@Mapping(target = "tokens", ignore = true)
+	@Mapping(target = "participante", ignore = true)
 	Usuario toUsuarioEntrada(UsuarioEntradaDTO usuarioEntradaDTO);
 	List<UsuarioEntradaDTO> toEntradaDTOs(List<Usuario> usuarios);
 	List<Usuario> toUsuarioEntradas(List<UsuarioEntradaDTO> usuarioEntradaDTO);

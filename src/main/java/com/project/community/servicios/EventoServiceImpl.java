@@ -33,7 +33,7 @@ public class EventoServiceImpl implements EventoService{
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Evento> getEventos() {
 
 		return eventoRepository.findAll();
