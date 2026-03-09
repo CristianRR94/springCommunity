@@ -53,7 +53,7 @@ public class WebSecurityConfig {
 		.cors(cors->cors.configurationSource(corsConfigurationSource()))
 		.authorizeHttpRequests(req -> req.requestMatchers("/auth/**")
 				.permitAll()
-				.requestMatchers("/api/usuarios/refresh")
+				.requestMatchers("/api/usuarios/refresh", "/images/**")
 				.permitAll()
 				.requestMatchers("/api/eventos/**")
 				.authenticated()
