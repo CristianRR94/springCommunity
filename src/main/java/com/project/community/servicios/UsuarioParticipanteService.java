@@ -16,5 +16,4 @@ public interface UsuarioParticipanteService {
 	
 	public void guardarUsuarioToken(Usuario usuario, String jwtToken);
 	
-
 }

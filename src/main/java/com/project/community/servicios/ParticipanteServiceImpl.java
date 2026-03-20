@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.community.entidades.Participante;
 import com.project.community.entidades.Usuario;
@@ -51,6 +52,14 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 		return participanteRepository.findByUsuarioId(id);
 	}
 	
+	@Transactional
+	public void addAmigo(Long idParticpante, Long idAmigo) {
+		Participante p = participanteRepository.findById(idParticpante).orElseThrow();
+		Participante amigo = participanteRepository.findById(idAmigo).orElseThrow();
+		p.agregarAmigo(amigo);
+		participanteRepository.save(p);
+	}
+	
 	public Participante crearParticipanteNombreUsuario(String nombre, Usuario usuario) {
 		return Participante.builder().nombreParticipante(nombre).usuario(usuario).build();
 	}
@@ -65,6 +74,7 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 		Participante participante = participanteRepository.findById(id).orElse(null);
 		return participante.getAmigos();
 	}
+	
 		
 
 }

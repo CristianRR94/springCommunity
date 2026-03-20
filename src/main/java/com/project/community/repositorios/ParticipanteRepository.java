@@ -10,6 +10,13 @@ import com.project.community.entidades.Participante;
 
 public interface ParticipanteRepository extends JpaRepository<Participante, Long>{
 	Participante findByUsuarioId(Long usuarioId);
+	
+	Optional<Participante> findById(Long idParticipante);
+	
 	@EntityGraph(attributePaths = "amigos")
-	Optional<Participante> findById(Long id);
+	Optional<Participante> findWithAmigosById(Long id);
+	
+	
+	
+
 }

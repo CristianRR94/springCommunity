@@ -60,6 +60,8 @@ public class Participante extends TimestampEntity {
 			joinColumns = @JoinColumn(name="participante_id"),
 			inverseJoinColumns = @JoinColumn(name= "amigo_id"))
 	@Builder.Default
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	private Set<Participante> amigos = new HashSet<>();
 	
 	@OneToOne
@@ -84,6 +86,13 @@ public class Participante extends TimestampEntity {
 			throw new IllegalStateException("El participante no tiene usuario asociado");
 		}
 		return this.usuario.getId();
+	}
+	
+	public void agregarAmigo(Participante amigo) {
+		if(amigo == null || amigo.equals(this)) {
+			throw new IllegalArgumentException("Error al añadir amigo");
+		}
+		this.amigos.add(amigo);
 	}
 
 }

@@ -26,7 +26,7 @@ public class AuthController {
 	private final UsuarioMapper usuarioMapper;
 	private final UsuarioParticipanteService usuarioParticipanteService;
 	private final UsuarioService usuarioService;
-	@PostMapping("crear")
+	@PostMapping("/crear")
 	public ResponseEntity<TokenResponse> postUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO){
 		Usuario usuarioEntrada = usuarioMapper.toUsuarioEntrada(usuarioDTO);
 		TokenResponse token = usuarioParticipanteService.createUsuarioParticipante(usuarioEntrada);

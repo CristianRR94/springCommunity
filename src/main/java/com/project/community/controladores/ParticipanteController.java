@@ -47,7 +47,7 @@ public class ParticipanteController {
 	}
 	
 	@GetMapping
-	public List<ParticipanteDTO>getParticipantes(){
+	public List<ParticipanteDTO> getParticipantes(){
 		List<Participante> participantes = participanteService.getParticipantes();
 		return participanteMapper.toDTOs(participantes);
 	}

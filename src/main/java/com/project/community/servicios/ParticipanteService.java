@@ -22,6 +22,8 @@ public interface ParticipanteService {
 	
 	public Participante findParticipanteByUsuario(Long id);
 	
+	public void addAmigo(Long idParticipante, Long idAmigo);
+	
 	//methods for the creation of "Participante" based on "Usuario"
 	
 	//public Participante postNameParticipante(Participante participante, String name);
@@ -31,4 +33,5 @@ public interface ParticipanteService {
 	public void cambiarParticipanteNombre(String nombre, Long usuarioId);
 	
 	public Set<Participante> getAmigos(Long id);
+	
 }
