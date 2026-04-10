@@ -72,7 +72,7 @@ public class EventoController {
 		return eventoMapper.toDTO(eventoGuardado);
 	}
 
-	@PutMapping("modificar/{id}")
+	@PutMapping("/modificar/{id}")
 	public EventoDTO updateEvento(@Valid @RequestBody EventoDTO eventoDTO) {
 		Evento evento = eventoMapper.toEvento(eventoDTO);
 		Evento eventoGuardado = eventoService.putEvento(evento);
@@ -85,7 +85,7 @@ public class EventoController {
 		return eventoMapper.toPrincipalDTOList(eventos);
 	}
 
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("/delete/{id}")
 	public void deleteEvento(Long id) {
 		eventoService.deleteEvento(id);
 	}

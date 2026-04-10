@@ -33,5 +33,9 @@ public interface ParticipanteService {
 	public void cambiarParticipanteNombre(String nombre, Long usuarioId);
 	
 	public Set<Participante> getAmigos(Long id);
+
+	Participante findParticipanteWithAmigosByUsuarioId(Long id);
+	
+	public Set<Participante> mostrarListaAmigos(String input, Long miId);
 	
 }
