@@ -67,15 +67,14 @@ public class EventoController {
 			String archivo = imageService.postImage(imagen);
 			eventoDTO.setImagenEvento(archivo);
 		}
-		Evento evento = eventoMapper.toEvento(eventoDTO);
-		Evento eventoGuardado = eventoService.postEvento(evento); 
+		Evento eventoGuardado = eventoService.postEvento(eventoDTO); 
 		return eventoMapper.toDTO(eventoGuardado);
 	}
 
 	@PutMapping("/modificar/{id}")
 	public EventoDTO updateEvento(@Valid @RequestBody EventoDTO eventoDTO) {
-		Evento evento = eventoMapper.toEvento(eventoDTO);
-		Evento eventoGuardado = eventoService.putEvento(evento);
+
+		Evento eventoGuardado = eventoService.putEvento(eventoDTO);
 		return eventoMapper.toDTO(eventoGuardado);
 	}
 	

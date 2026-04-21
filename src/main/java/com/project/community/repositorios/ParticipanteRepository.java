@@ -1,6 +1,7 @@
 package com.project.community.repositorios;
 
 import java.util.Optional;
+
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -15,8 +16,8 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 	Participante findByUsuarioId(Long usuarioId);
 	
 	//encontrar participante con amigos a partir de id usuario
-	@EntityGraph(attributePaths = "amigos")
-	Optional<Participante> findWithAmigosByUsuarioId(Long UsuarioId);
+	@EntityGraph(attributePaths = {"amigos", "usuario"})
+	Optional<Participante> findWithAmigosByUsuarioId(Long usuarioId);
 	
 	//encontrar participante por id con lazy de tablas
 	Optional<Participante> findById(Long idParticipante);
@@ -34,5 +35,8 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 			+ " AND p.usuario.id != :miId"
 			+ " AND p NOT IN (SELECT a FROM Participante p2 JOIN p2.amigos a WHERE p2.usuario.id = :miId)")
 	Set<Participante> buscarAmigos(@Param("input") String input, @Param("miId") Long miId);
+	
+	@Query("SELECT p FROM Participante p LEFT JOIN FETCH p.amigos WHERE p.usuario.id= :usuarioId")
+	Optional<Participante> mostrarListaAmigosPorUsuario(@Param("usuarioId") Long usuarioId);
 
 }

@@ -52,7 +52,7 @@ public interface ParticipanteMapper {
 	Set<ParticipanteDTO> toSetParticipantesDTO(Set<Participante> participanteDTOs);
 	
 	@Mapping(target="usuarioId", source="usuario.id")
-	@Mapping(target="amigosId", source="amigos")
+	@Mapping(target="amigosId", source="amigos", ignore=true)
 	ParticipanteAmigoDTO toAmigoDTO(Participante participante);
 	Set<ParticipanteAmigoDTO> toAmigoListDTO(Set<Participante> participantes);
 	

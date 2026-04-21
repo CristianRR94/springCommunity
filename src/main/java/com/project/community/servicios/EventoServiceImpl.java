@@ -3,23 +3,29 @@ package com.project.community.servicios;
 import java.util.List;
 
 
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.project.community.DTO.EventoDTO;
 import com.project.community.entidades.Evento;
 import com.project.community.entidades.Participante;
+import com.project.community.mapper.EventoMapper;
 import com.project.community.repositorios.EventoRepository;
+import com.project.community.repositorios.ParticipanteRepository;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class EventoServiceImpl implements EventoService{
-	
+
+    private final ParticipanteRepository participanteRepository;
 	private final EventoRepository eventoRepository;
 	private final AuthDataService authDataService;
-	
-	public EventoServiceImpl(EventoRepository eventoRepository, AuthDataService authDataService) {
-		this.eventoRepository = eventoRepository;
-		this.authDataService = authDataService;
-	}
+	private final EventoMapper mapper;
+
+
+
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -41,17 +47,28 @@ public class EventoServiceImpl implements EventoService{
 
 	@Override
 	@Transactional
-	public Evento postEvento(Evento evento) {
+	public Evento postEvento(EventoDTO dto) {
+		Evento evento = mapper.toEvento(dto);
 		Participante participante = authDataService.obtenerParticipanteAutenticado();
 		evento.addParticipante(participante);
 		evento.addAdministrador(participante);
+		//cambio para invitacion
+		if(dto.getParticipantesEvento() != null) {
+			dto.getParticipantesEvento().forEach(id -> {
+				participanteRepository.findById(id).ifPresent(
+						amigo->{
+							evento.addParticipante(
+									amigo);
+						});
+			});
+		}
 		return eventoRepository.save(evento);
 	}
 
 	@Override
 	@Transactional
-	public Evento putEvento(Evento evento) {
-
+	public Evento putEvento(EventoDTO dto) {
+		Evento evento = mapper.toEvento(dto);
 		return eventoRepository.save(evento);
 	}
 

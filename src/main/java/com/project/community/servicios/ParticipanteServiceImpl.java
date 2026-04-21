@@ -59,8 +59,9 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 	}
 	
 	@Override
+	@Transactional(readOnly = true)
 	public Participante findParticipanteWithAmigosByUsuarioId(Long id) {
-		return participanteRepository.findWithAmigosByUsuarioId(id)
+		return participanteRepository.mostrarListaAmigosPorUsuario(id)
 				.orElseThrow(()-> new EntityNotFoundException("Usuario no encontrado"));
 	}
 	

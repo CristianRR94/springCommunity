@@ -22,6 +22,6 @@ public class EventoDTO {
 	private boolean privado;
 	private boolean oculto;
 	private int maxNumParticipantes;
-	private List<Long> participanteIds;
-	private List<Long> administradorIds;
+	private List<Long> participantesEvento;
+	private List<Long> administradores;
 }

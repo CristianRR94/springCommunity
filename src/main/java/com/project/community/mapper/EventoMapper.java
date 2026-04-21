@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -14,8 +15,9 @@ import com.project.community.DTO.EventoDTO;
 import com.project.community.DTO.EventoPrincipalDTO;
 import com.project.community.entidades.Evento;
 import com.project.community.entidades.Participante;
+import com.project.community.repositorios.ParticipanteRepository;
 
-@Mapper(componentModel =  "spring")
+@Mapper(componentModel =  "spring", uses = {ParticipanteRepository.class})
 public interface EventoMapper {
 	
 	default Long participanteId(Participante participante){
@@ -30,9 +32,16 @@ public interface EventoMapper {
 		return participantesId.collect(Collectors.toList());
 	}
 	
+	default Participante getFromParticipanteId(Long id, @Context ParticipanteRepository participanteRepository) {
+		if(id == null) {
+			return null;
+		}
+		return participanteRepository.findById(id).orElse(null);
+	}
 	
-	@Mapping(target = "participanteIds", source = "participantesEvento")
-	@Mapping(target = "administradorIds", source = "administradores")
+	
+	@Mapping(target = "participantesEvento", source = "participantesEvento")
+	@Mapping(target = "administradores", source = "administradores")
 	EventoDTO toDTO(Evento evento);
 	@Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
