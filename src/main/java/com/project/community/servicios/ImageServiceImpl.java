@@ -15,6 +15,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.community.enums.StorageFolder;
 import com.project.community.security.SecurityMethods;
 import com.project.community.storage.StorageException;
 import com.project.community.storage.StorageFileNotFoundException;
@@ -41,18 +42,10 @@ public class ImageServiceImpl implements ImageService{
 	}
 		
 	//Obtener la extension
-	/*	public String getExtension(String filename) {
-			if(filename == null || filename.isBlank()) {
-				throw new RuntimeException("No se ha podido obtener la extension");
-			}
-			//obtenemos string despues de punto, si existe
-			int ultimoPunto = filename.lastIndexOf(".");
-			return (ultimoPunto >= 0) ? filename.substring(ultimoPunto).toLowerCase() : null;
-		}*/
+	//(movido a securityMethods)
 	@Override
-	public Resource getImage(String filename) {
-		
-		
+	public Resource getImage(String filename, String folder) {
+
 		try {
 			securityMethods.getValidacionExtension(filename);
 			securityMethods.limpiarFile(filename);			
@@ -76,22 +69,30 @@ public class ImageServiceImpl implements ImageService{
 	}
 
 	@Override
-	public String postImage(MultipartFile file) {
+	public String postImage(MultipartFile file, StorageFolder folder) {
 		try {
 			if(file.isEmpty()) {
 				throw new RuntimeException("Archivo vacío");
 			}
+			if(folder == null) {
+				throw new StorageException("Error en la carpeta de alamcenamiento");
+			}
 			String originalFileName = file.getOriginalFilename();
 			securityMethods.limpiarFile(originalFileName);
-			securityMethods.getValidacionExtension(originalFileName);
 			String extension = securityMethods.getValidacionExtension(file.getOriginalFilename());
 			String nombreImagen =  UUID.randomUUID().toString() + extension;
-			Path destination = securityMethods.getRootLocation().resolve(nombreImagen).normalize().toAbsolutePath();
+			String nombreFolder = folder.getPath();
+			Path folderPath = securityMethods.getRootLocation().resolve(nombreFolder);
+			if(!Files.exists(folderPath)) {
+				Files.createDirectories(folderPath);
+			}
+			Path destination = folderPath.resolve(nombreImagen).normalize().toAbsolutePath();
 			securityMethods.controlarDirectorio(destination);
 			try(InputStream  inputStream = file.getInputStream()){
 				Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
 			}
-			return nombreImagen;
+			//nombreFolder para tenerlo en minúsculas
+			return nombreFolder + "/" +nombreImagen;
 		}
 		catch (IOException e) {
 			throw new StorageException("Error al guardar el archivo", e);
@@ -99,7 +100,7 @@ public class ImageServiceImpl implements ImageService{
 	}
 
 	@Override
-	public void deleteImage(String filename) {
+	public void deleteImage(String filename, String folder) {
 		try {			
 			securityMethods.limpiarFile(filename);			
 			Path imagePath = securityMethods.getRootLocation().resolve(filename).normalize();
@@ -111,7 +112,5 @@ public class ImageServiceImpl implements ImageService{
 		}
 		
 	}
-	
-	
 
 }

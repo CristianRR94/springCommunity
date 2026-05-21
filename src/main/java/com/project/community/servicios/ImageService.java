@@ -6,13 +6,16 @@ import java.util.stream.Stream;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.project.community.enums.StorageFolder;
+
 public interface ImageService {
 	
-	public Resource getImage(String filename);
-	
+	public Resource getImage(String filename, String folder);
+		
 	public Stream<Path> getImages();
 	
-	public String postImage(MultipartFile file);
+	public String postImage(MultipartFile file, StorageFolder folder);
 	
-	public void deleteImage(String filename);
+	public void deleteImage(String filename, String folder);
+	
 }

@@ -1,4 +1,6 @@
-package com.project.community.servicios;
+/* SIN USO, VERSION MEJORADA EN IMAGESERVICE---------------------------------------->
+ package com.project.community.servicios;
+ 
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.community.storage.StorageException;
 import com.project.community.storage.StorageFileNotFoundException;
 import com.project.community.storage.StorageProperties;
+
 
 @Service
 public class StorageServiceImpl implements StorageService{
@@ -106,3 +109,4 @@ public class StorageServiceImpl implements StorageService{
 	}
 
 }
+*/

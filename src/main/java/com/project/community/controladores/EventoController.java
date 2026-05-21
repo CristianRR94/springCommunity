@@ -2,6 +2,7 @@ package com.project.community.controladores;
 
 import java.util.List;
 
+
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -15,14 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.project.community.DTO.EventoDTO;
 import com.project.community.DTO.EventoPrincipalDTO;
-//import com.google.gson.Gson;
-//import com.google.gson.GsonBuilder;
-//import com.project.community.config.LocalDateTimeAdapter;
 import com.project.community.entidades.Evento;
 import com.project.community.entidades.Usuario;
+import com.project.community.enums.StorageFolder;
 import com.project.community.mapper.EventoMapper;
 import com.project.community.servicios.EventoService;
 import com.project.community.servicios.ImageService;
@@ -64,7 +62,7 @@ public class EventoController {
 			@RequestPart(value="image", required=false) MultipartFile imagen 
 			) {
 		if(imagen != null && !imagen.isEmpty()) {
-			String archivo = imageService.postImage(imagen);
+			String archivo = imageService.postImage(imagen, StorageFolder.EVENTOS);
 			eventoDTO.setImagenEvento(archivo);
 		}
 		Evento eventoGuardado = eventoService.postEvento(eventoDTO); 
