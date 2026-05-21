@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.community.DTO.EventoDTO;
+import com.project.community.dominio.EventoNotFoundException;
 import com.project.community.entidades.Evento;
 import com.project.community.entidades.Participante;
 import com.project.community.mapper.EventoMapper;
@@ -50,8 +51,7 @@ public class EventoServiceImpl implements EventoService{
 	public Evento postEvento(EventoDTO dto) {
 		Evento evento = mapper.toEvento(dto);
 		Participante participante = authDataService.obtenerParticipanteAutenticado();
-		evento.addParticipante(participante);
-		evento.addAdministrador(participante);
+		evento.addCreadorComoAdmin(participante);
 		//cambio para invitacion
 		if(dto.getParticipantesEvento() != null) {
 			dto.getParticipantesEvento().forEach(id -> {
@@ -75,7 +75,7 @@ public class EventoServiceImpl implements EventoService{
 	@Override
 	@Transactional
 	public void deleteEvento(Long id) {
-		Evento evento = eventoRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Evento no encontrado con id: " + id));
+		Evento evento = eventoRepository.findById(id).orElseThrow(() -> new EventoNotFoundException("Evento no encontrado con id: " + id));
 		eventoRepository.delete(evento);
 	}
 

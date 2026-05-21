@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.project.community.dominio.ParticipanteException;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,10 +42,10 @@ public class Evento extends TimestampEntity {
 	private Long id;
 	
 	@NotBlank
-	@Size(max=20)
+	@Size(max=255)
 	private String nombreEvento;
 	
-	@Size(max=20)	
+	@Size(max=255)	
 	private String tipoEvento;
 	
 	
@@ -71,22 +73,14 @@ public class Evento extends TimestampEntity {
 	@Max(255)
 	@Min(0)
 	private int maxNumParticipantes;
-
-	
-   // @PrePersist
-   // protected void onCreate() {
-   //     this.createdAt = LocalDateTime.now();
-   // }
-	//
-   // @PreUpdate
-   // protected void onUpdate() {
-   //     this.updatedAt = LocalDateTime.now();
-   // }
 	
 	 // Domain Driven Design - domain methods
-    public void addParticipante(Participante participante) {
-        participantesEvento.add(participante);
-        participante.getEventos().add(this);
+    public boolean addParticipante(Participante participante) {
+        if(participantesEvento.add(participante)) {
+        	participante.recibirNotificacion(this);
+        	return true;
+        }
+        return false;
     }
 
     public void removeParticipante(Participante participante) {
@@ -97,13 +91,13 @@ public class Evento extends TimestampEntity {
         administradores.remove(participante);
     }
 
-    public boolean addAdministrador(Participante participante) {
-    	if(participantesEvento.contains(participante)) {
-    		administradores.add(participante);
-    		participante.getEventosAdministrados().add(this);	
-    		return true;
+    public void addAdministrador(Participante participante) {
+    	if(!participantesEvento.contains(participante)) {
+    	 throw new ParticipanteException("Usuario no encontrado como participante");
     	}
-    	else return false;
+    	administradores.add(participante);
+		participante.getEventosAdministrados().add(this);
+    
     }
 
     public void removeAdministrador(Participante participante) {
@@ -111,9 +105,20 @@ public class Evento extends TimestampEntity {
         participante.getEventosAdministrados().remove(this);
     }
     
-    public int countParticipantes(Set<Participante> participantesEvento) {
-    	return participantesEvento.size();
+    public int countParticipantes() {
+    	return this.participantesEvento.size();
     }
    
+    public void addCreadorComoAdmin(Participante creador) {
+    	if(creador == null) {
+    		throw new IllegalArgumentException("Creador de evento nulo");
+    	}
+    	this.participantesEvento.add(creador);
+    	this.administradores.add(creador);
+    	
+    	creador.getEventos().add(this);
+    	creador.getEventosAdministrados().add(this);
+    }
+
 }
 

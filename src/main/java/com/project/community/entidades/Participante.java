@@ -94,5 +94,10 @@ public class Participante extends TimestampEntity {
 		}
 		this.amigos.add(amigo);
 	}
+	
+	
+	public void recibirNotificacion(Evento evento) {
+		getEventos().add(evento);
+	}
 
 }

@@ -2,11 +2,14 @@ package com.project.community.excepciones;
 
 import org.springframework.http.HttpStatus;
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.project.community.dominio.EventoNotFoundException;
+import com.project.community.dominio.ParticipanteException;
 import com.project.community.entidades.ErrorResponse;
 import com.project.community.storage.StorageException;
 import com.project.community.storage.StorageFileNotFoundException;
@@ -68,5 +71,44 @@ public class GlobalExceptionHandler {
 				System.currentTimeMillis()
 				);
 		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ParticipanteException.class)
+	public ResponseEntity<ErrorResponse> handleInvalidParticipante(ParticipanteException ex){
+		ErrorResponse error = new ErrorResponse(
+				HttpStatus.UNPROCESSABLE_ENTITY.value(),
+				ex.getMessage(),
+				System.currentTimeMillis()
+				);
+		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+	
+	@ExceptionHandler(EventoNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleUnknwonEvento(EventoNotFoundException ex){
+		ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+				ex.getMessage(),
+				System.currentTimeMillis());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(ValidatorException.class)
+	public ResponseEntity<ErrorResponse> handleValidation(ValidatorException ex){
+		ErrorResponse error = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+				ex.getMessage(),
+				System.currentTimeMillis());
+			return new ResponseEntity<ErrorResponse>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+	}
+	
+	@ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)
+	public ResponseEntity<ErrorResponse> handleDtoValidation(org.springframework.web.bind.MethodArgumentNotValidException ex) {
+	    // Extraemos el primer mensaje de error que pusiste en las anotaciones del DTO
+	    String mensajeError = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
+	    
+	    ErrorResponse error = new ErrorResponse(
+	            HttpStatus.BAD_REQUEST.value(),
+	            mensajeError,
+	            System.currentTimeMillis()
+	    );
+	    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 	}
 }
