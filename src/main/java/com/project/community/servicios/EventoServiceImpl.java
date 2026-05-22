@@ -24,7 +24,7 @@ public class EventoServiceImpl implements EventoService{
 	private final EventoRepository eventoRepository;
 	private final AuthDataService authDataService;
 	private final EventoMapper mapper;
-
+	
 
 
 	
@@ -33,7 +33,7 @@ public class EventoServiceImpl implements EventoService{
 	public Evento getEvento(Long id) {
 
 		Evento evento = eventoRepository.findById(id).orElseThrow(
-				() -> new IllegalArgumentException("Evento no encontrado con id: " + id)
+				() -> new EventoNotFoundException("Evento no encontrado con id: " + id)
 				);
 
 		return evento;
@@ -51,6 +51,7 @@ public class EventoServiceImpl implements EventoService{
 	public Evento postEvento(EventoDTO dto) {
 		Evento evento = mapper.toEvento(dto);
 		Participante participante = authDataService.obtenerParticipanteAutenticado();
+		evento.validarFecha();
 		evento.addCreadorComoAdmin(participante);
 		//cambio para invitacion
 		if(dto.getParticipantesEvento() != null) {
@@ -68,8 +69,19 @@ public class EventoServiceImpl implements EventoService{
 	@Override
 	@Transactional
 	public Evento putEvento(EventoDTO dto) {
-		Evento evento = mapper.toEvento(dto);
-		return eventoRepository.save(evento);
+		Evento eventoActual = eventoRepository.findById(dto.getId())
+				.orElseThrow(()-> new EventoNotFoundException("Error al detectar el evento actual"));
+		eventoActual.actualizarEvento(
+		        dto.getNombreEvento(),
+		        dto.getTipoEvento(),
+		        dto.getFechaEvento(),
+		        dto.getInformacion(),
+		        dto.getChat(),
+		        dto.isPrivado(),
+		        dto.isOculto(),
+		        dto.getMaxNumParticipantes()
+		    );
+		return eventoRepository.save(eventoActual);
 	}
 
 	@Override

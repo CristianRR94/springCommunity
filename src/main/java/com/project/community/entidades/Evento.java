@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.project.community.dominio.EventoValidatorException;
 import com.project.community.dominio.ParticipanteException;
 
 import jakarta.persistence.Entity;
@@ -119,6 +120,27 @@ public class Evento extends TimestampEntity {
     	creador.getEventos().add(this);
     	creador.getEventosAdministrados().add(this);
     }
-
+    
+    public void validarFecha() {
+    	if(this.getFechaEvento() != null) {
+    		LocalDate hoy = LocalDate.now();
+    		if(this.getFechaEvento().isBefore(hoy)) {
+    			throw new EventoValidatorException("No puedes asignar una fecha pasada");
+    		}
+        }
+    }
+    
+    public void actualizarEvento(String nombre, String tipo, LocalDate fecha, String informacion, String chat, boolean privado, boolean oculto, int maxNum) {
+    	this.nombreEvento = nombre;
+        this.tipoEvento = tipo;
+        this.fechaEvento = fecha;
+        this.informacion = informacion;
+        this.chat = chat;
+        this.privado = privado;
+        this.oculto = oculto;
+        this.maxNumParticipantes = maxNum;
+        
+        this.validarFecha();
+    }
 }
 
