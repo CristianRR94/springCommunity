@@ -3,6 +3,7 @@ package com.project.community.excepciones;
 import org.springframework.http.HttpStatus;
 
 
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.project.community.dominio.EventoNotFoundException;
 import com.project.community.dominio.ParticipanteException;
+import com.project.community.dominio.UsuarioNotFoundException;
 import com.project.community.entidades.ErrorResponse;
 import com.project.community.storage.StorageException;
 import com.project.community.storage.StorageFileNotFoundException;
@@ -110,5 +112,13 @@ public class GlobalExceptionHandler {
 	            System.currentTimeMillis()
 	    );
 	    return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(UsuarioNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleUnknwonUsuario(UsuarioNotFoundException ex){
+		ErrorResponse error = new ErrorResponse(HttpStatus.NOT_FOUND.value(),
+				ex.getMessage(),
+				System.currentTimeMillis());
+		return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
 	}
 }

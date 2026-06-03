@@ -63,14 +63,14 @@ public class UsuarioServiceImpl implements UsuarioService{
 	@Override
 	public Usuario encontrarNombre(String nombre) {
 		
-		return usuarioRepository.findByNombre(nombre);
+		return usuarioRepository.findByNombre(nombre).orElseThrow(()-> new UsernameNotFoundException(nombre + "no encontrado."));
 	}
 
 	@Override
 	public TokenResponse login(Usuario usuario) {
 		authManager.authenticate(
-				new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getPassword()));
-		Usuario usuarioLogin = usuarioRepository.findByEmail(usuario.getEmail()).orElseThrow(()->
+				new UsernamePasswordAuthenticationToken(usuario.getNombre(), usuario.getPassword()));
+		Usuario usuarioLogin = usuarioRepository.findByNombre(usuario.getNombre()).orElseThrow(()->
 				new UsernameNotFoundException("Usuario no encontrado"));
 		String jwtToken = jwtService.generateToken(usuarioLogin);
 		String refreshToken = jwtService.generateRefreshToken(usuarioLogin);
@@ -111,8 +111,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 		
 		//esta en la base de datos?
 		final String refreshToken = authHeader.substring(7);
-		final String userEmail = jwtService.extractUsername(refreshToken);
-		if(userEmail == null){
+		final String userName = jwtService.extractUsername(refreshToken);
+		if(userName == null){
 			throw new IllegalArgumentException("Invalid refresh token");
 		}
 		
@@ -121,8 +121,8 @@ public class UsuarioServiceImpl implements UsuarioService{
 			throw new IllegalArgumentException("Invalid token type");
 		}
 		
-		final Usuario usuario = usuarioRepository.findByEmail(userEmail).orElseThrow(
-				()->new UsernameNotFoundException(userEmail));
+		final Usuario usuario = usuarioRepository.findByNombre(userName).orElseThrow(
+				()->new UsernameNotFoundException(userName));
 		if(!jwtService.isTokenValid(refreshToken, usuario)) {
 			throw new IllegalArgumentException("Invalid refresh token");
 		}
@@ -150,6 +150,11 @@ public class UsuarioServiceImpl implements UsuarioService{
 			}
 			tokenRepository.saveAll(validUserTokens);
 		}
+	}
+
+	@Override
+	public boolean existeNombre(String nombre) {
+		return usuarioRepository.existsByNombre(nombre);
 	}
 
 

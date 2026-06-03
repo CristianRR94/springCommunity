@@ -25,20 +25,19 @@ public Usuario obtenerUsuarioAutenticado() {
 	if(auth == null) {
 		throw new IllegalStateException("No hay usuario autenticado");
 	}
-	String email = auth.getName(); //devuelve email
-	Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("No existe el email: " + email));
+	String name = auth.getName(); 
+	Usuario usuario = usuarioRepository.findByNombre(name).orElseThrow(()->new UsernameNotFoundException("No existe el nombre: " + name));
 	return usuario;
 }
 
 
 public Participante obtenerParticipanteAutenticado() {
-	
-	
+
 	Usuario usuario = obtenerUsuarioAutenticado();
 	Participante participante = participanteService.findParticipanteByUsuario(usuario.getId());
 	if(participante == null) {
 		throw new IllegalStateException("No hay usuario autenticado");
 	}
 	return participante;
-}
+	}
 }

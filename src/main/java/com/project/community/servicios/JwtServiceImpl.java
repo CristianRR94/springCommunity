@@ -64,7 +64,7 @@ public class JwtServiceImpl implements JwtService{
 						"tipo_uso", tipo,
 						"roles", roles)
 						)
-				.subject(usuario.getEmail())
+				.subject(usuario.getNombre())
 				.issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + expiration))
 				.signWith(getSigninKey())

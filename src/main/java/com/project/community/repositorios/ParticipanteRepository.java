@@ -39,4 +39,8 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 	@Query("SELECT p FROM Participante p LEFT JOIN FETCH p.amigos WHERE p.usuario.id= :usuarioId")
 	Optional<Participante> mostrarListaAmigosPorUsuario(@Param("usuarioId") Long usuarioId);
 
+	Optional<Participante> findByUsuarioEmail(String email);
+	
+	
+
 }

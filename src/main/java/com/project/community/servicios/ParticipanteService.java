@@ -22,7 +22,7 @@ public interface ParticipanteService {
 	
 	public Participante findParticipanteByUsuario(Long id);
 	
-	public void addAmigo(Long idParticipante, Long idAmigo);
+	public void addAmigo(Long idAmigo);
 	
 	//methods for the creation of "Participante" based on "Usuario"
 	
@@ -34,8 +34,10 @@ public interface ParticipanteService {
 	
 	public Set<Participante> getAmigos(Long id);
 
-	Participante findParticipanteWithAmigosByUsuarioId(Long id);
+	Participante findParticipanteWithAmigosByUsuarioId();
 	
 	public Set<Participante> mostrarListaAmigos(String input, Long miId);
+	
+	public Participante obtenerParticipanteAutenticado();
 	
 }

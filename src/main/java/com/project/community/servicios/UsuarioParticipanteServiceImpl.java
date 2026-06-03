@@ -48,7 +48,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 	public Usuario modNombreUsuarioParticipante(Long id, String nuevoNombre) {
 		Usuario usuario = usuarioService.getUsuario(id);
 		if(nuevoNombre == null || nuevoNombre.isBlank()) {
-			throw new IllegalArgumentException("Intoduce un nombre válido");
+			throw new IllegalArgumentException("Introduce un nombre válido");
 		}
 		if(usuario == null) {
 			throw new IllegalArgumentException("No se ha encontrado ningún usuario");
@@ -60,8 +60,8 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 		if(nombreViejo.equals(nuevoNombre)) {
 			throw new IllegalArgumentException("Introduce un nombre distinto al antiguo");
 		}
-		Usuario otroUsuario = usuarioService.encontrarNombre(nuevoNombre);
-		if(otroUsuario.getNombre() != null) {
+		
+		if(usuarioService.existeNombre(nuevoNombre)) {
 			throw new IllegalArgumentException("Nombre ya en uso");
 		}
 		participanteService.cambiarParticipanteNombre(nuevoNombre, id);
@@ -78,6 +78,7 @@ public class UsuarioParticipanteServiceImpl implements UsuarioParticipanteServic
 				.tokenType(Token.TokenType.BEARER)
 				.expired(false)
 				.revoked(false)
+				.tipoUso("ACCESS")
 				.build();
 		tokenRepository.save(token);
 	}

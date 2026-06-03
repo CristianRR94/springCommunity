@@ -14,7 +14,7 @@ import com.project.community.entidades.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
-	Usuario findByNombre(String nombre);
+	Optional<Usuario> findByNombre(String nombre);
 	Optional<Usuario> findByEmail(String email);
-	 
+	boolean existsByNombre(String nombre);
 }

@@ -100,7 +100,7 @@ public class Usuario extends TimestampEntity implements UserDetails{
 	@Override
 	public String getUsername() {
 
-		return email;
+		return nombre;
 	}
 	
 }

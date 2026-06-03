@@ -26,4 +26,6 @@ public interface UsuarioService{
 	public void logout(String token);
 
 	TokenResponse refresh(String authHeader);
+	
+	public boolean existeNombre(String nombre);
 }

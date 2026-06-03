@@ -55,6 +55,8 @@ public class WebSecurityConfig {
 				.permitAll()
 				.requestMatchers("/api/usuarios/**", "/images/**")
 				.permitAll()
+				.requestMatchers("/ws-chat")
+				.permitAll()
 				.requestMatchers("/api/eventos/**", "/api/participantes/**")
 				.authenticated()
 				.anyRequest()
