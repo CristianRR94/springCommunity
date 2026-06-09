@@ -123,6 +123,7 @@ public class ParticipanteServiceImpl implements ParticipanteService{
 	}
 
 	@Override
+	@Transactional
 	public Participante obtenerParticipanteAutenticado() {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		String nombre = auth.getName();

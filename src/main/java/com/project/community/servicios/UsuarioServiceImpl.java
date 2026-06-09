@@ -157,6 +157,9 @@ public class UsuarioServiceImpl implements UsuarioService{
 		return usuarioRepository.existsByNombre(nombre);
 	}
 
-
+	@Override
+	public Long getId(String token) {
+		return jwtService.extractId(token);
+	}
 
 }

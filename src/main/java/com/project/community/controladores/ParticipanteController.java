@@ -4,6 +4,7 @@ import java.util.List;
 
 import java.util.Set;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,7 @@ public class ParticipanteController {
 	// private UsuarioRepository usuarioRepository;
 
 
-	
+	@Transactional
 	@GetMapping("{id}")
 	public ParticipanteDTO getParticipante(@PathVariable Long id) {
 		Participante participante =  participanteService.getParticipante(id);

@@ -28,4 +28,6 @@ public interface UsuarioService{
 	TokenResponse refresh(String authHeader);
 	
 	public boolean existeNombre(String nombre);
+
+	Long getId(String token);
 }

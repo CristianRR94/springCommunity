@@ -4,6 +4,7 @@ package com.project.community.servicios;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -29,14 +30,17 @@ public class JwtServiceImpl implements JwtService{
 	@Value("${jwt.refresh.expiration}")
 	private Long refreshExpiration;
 	
+	private Claims extraerInfo(final String token) {
+		return Jwts.parser()
+		.verifyWith(getSigninKey())
+		.build()
+		.parseSignedClaims(token)
+		.getPayload();
+	}
+		
 	@Override
 	public String extractUsername(final String token) {
-		final Claims jwtToken = Jwts.parser()
-				.verifyWith(getSigninKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload();
-		return jwtToken.getSubject();
+		return extraerInfo(token).getSubject();
 	}
 	
 	@Override
@@ -58,12 +62,13 @@ public class JwtServiceImpl implements JwtService{
 				.map(GrantedAuthority::getAuthority)
 				.toList();
 		return Jwts.builder()
-				.id(usuario.getId().toString())
 				.claims(Map.of(
+						"usuarioId", usuario.getId(),
 						"nombre", usuario.getNombre(),
 						"tipo_uso", tipo,
 						"roles", roles)
 						)
+				.id(UUID.randomUUID().toString())
 				.subject(usuario.getNombre())
 				.issuedAt(new Date(System.currentTimeMillis()))
 				.expiration(new Date(System.currentTimeMillis() + expiration))
@@ -89,23 +94,18 @@ public class JwtServiceImpl implements JwtService{
 	
 	@Override
 	public Date extractExpiration(final String token) {
-		final Claims jwtToken = Jwts.parser()
-				.verifyWith(getSigninKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload();
-		return jwtToken.getExpiration();
+		return extraerInfo(token).getExpiration();
 	}
 
 	@Override
 	public String extractType(String token) {
-		final Claims jwtToken = Jwts.parser()
-				.verifyWith(getSigninKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload();
-		return jwtToken.get("tipo_uso", String.class);
+		return extraerInfo(token).get("tipo_uso", String.class);
 	}
 	
+	@Override
+	public Long extractId(final String token) {
+		 
+		return extraerInfo(token).get("usuarioId", Long.class);
+	}
 
 }

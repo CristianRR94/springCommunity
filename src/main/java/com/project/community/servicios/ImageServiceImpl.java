@@ -75,7 +75,7 @@ public class ImageServiceImpl implements ImageService{
 				throw new RuntimeException("Archivo vacío");
 			}
 			if(folder == null) {
-				throw new StorageException("Error en la carpeta de alamcenamiento");
+				throw new StorageException("Error en la carpeta de almacenamiento");
 			}
 			String originalFileName = file.getOriginalFilename();
 			securityMethods.limpiarFile(originalFileName);
