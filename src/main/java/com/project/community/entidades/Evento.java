@@ -130,12 +130,13 @@ public class Evento extends TimestampEntity {
         }
     }
     
-    public void actualizarEvento(String nombre, String tipo, LocalDate fecha, String informacion, String chat, boolean privado, boolean oculto, int maxNum) {
+
+    public void actualizarEvento(String nombre, String tipo, LocalDate fecha, String informacion, boolean privado, boolean oculto, int maxNum) {
     	this.nombreEvento = nombre;
         this.tipoEvento = tipo;
         this.fechaEvento = fecha;
         this.informacion = informacion;
-        this.chat = chat;
+        //this.chat = chat;
         this.privado = privado;
         this.oculto = oculto;
         this.maxNumParticipantes = maxNum;

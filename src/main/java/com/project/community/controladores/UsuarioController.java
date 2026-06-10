@@ -65,7 +65,7 @@ public class UsuarioController {
 	@PutMapping("modificar")
 	public ResponseEntity<UsuarioSalidaDTO> putUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO) {	
 		Long idUsuario = authDataService.obtenerUsuarioAutenticado().getId();
-		Usuario usuario = usuarioParticipanteService.modNombreUsuarioParticipante(idUsuario, usuarioDTO.getNombre());
+		Usuario usuario = usuarioParticipanteService.modNombreUsuarioParticipante(idUsuario, usuarioDTO.nombre());
 		if(usuario == null) {
 			return ResponseEntity.notFound().build();
 		}

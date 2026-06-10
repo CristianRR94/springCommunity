@@ -17,4 +17,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long>{
 	List<Evento> findByParticipantesEvento_Id(Long idParticipante);
 	
 	Boolean existsByIdAndParticipantesEventoId(Long eventoId, Long participanteId);
+	
+
+	Boolean existsByIdAndAdministradoresId(long eventoId, Long participanteId);
 }

@@ -35,7 +35,7 @@ public class ImageServiceImpl implements ImageService{
 	@PostConstruct
 	public void init() {
 	    try {
-	        Files.createDirectories(securityMethods.getRootLocation());
+	    	Files.createDirectories(securityMethods.getRootLocation());
 	    } catch (IOException e) {
 	        throw new StorageException("No se pudo crear el directorio para imágenes", e);
 	    }
@@ -44,11 +44,11 @@ public class ImageServiceImpl implements ImageService{
 	//Obtener la extension
 	//(movido a securityMethods)
 	@Override
-	public Resource getImage(String filename, String folder) {
+	public Resource getImage(String filename) {
 
 		try {
 			securityMethods.getValidacionExtension(filename);
-			securityMethods.limpiarFile(filename);			
+			securityMethods.limpiarFile(filename);	
 			Path imagePath = securityMethods.getRootLocation().resolve(filename).normalize();
 			securityMethods.controlarDirectorio(imagePath);
 			Resource resource = new UrlResource(imagePath.toUri());
@@ -65,14 +65,14 @@ public class ImageServiceImpl implements ImageService{
 	@Override
 	public Stream<Path> getImages() {
 	
-		return null;
+		return Stream.empty();
 	}
 
 	@Override
 	public String postImage(MultipartFile file, StorageFolder folder) {
 		try {
 			if(file.isEmpty()) {
-				throw new RuntimeException("Archivo vacío");
+				throw new StorageException("Archivo vacío");
 			}
 			if(folder == null) {
 				throw new StorageException("Error en la carpeta de almacenamiento");
@@ -80,7 +80,7 @@ public class ImageServiceImpl implements ImageService{
 			String originalFileName = file.getOriginalFilename();
 			securityMethods.limpiarFile(originalFileName);
 			String extension = securityMethods.getValidacionExtension(file.getOriginalFilename());
-			String nombreImagen =  UUID.randomUUID().toString() + extension;
+			String nombreImagen = UUID.randomUUID().toString() + extension;
 			String nombreFolder = folder.getPath();
 			Path folderPath = securityMethods.getRootLocation().resolve(nombreFolder);
 			if(!Files.exists(folderPath)) {
@@ -88,7 +88,7 @@ public class ImageServiceImpl implements ImageService{
 			}
 			Path destination = folderPath.resolve(nombreImagen).normalize().toAbsolutePath();
 			securityMethods.controlarDirectorio(destination);
-			try(InputStream  inputStream = file.getInputStream()){
+			try(InputStream inputStream = file.getInputStream()){
 				Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
 			}
 			//nombreFolder para tenerlo en minúsculas
@@ -100,17 +100,15 @@ public class ImageServiceImpl implements ImageService{
 	}
 
 	@Override
-	public void deleteImage(String filename, String folder) {
+	public void deleteImage(String filename) {
 		try {			
-			securityMethods.limpiarFile(filename);			
+			securityMethods.limpiarFile(filename);
 			Path imagePath = securityMethods.getRootLocation().resolve(filename).normalize();
 			securityMethods.controlarDirectorio(imagePath);
-			Files.deleteIfExists(imagePath);	 
+			Files.deleteIfExists(imagePath);
 		}
 		catch (IOException e) {
 			throw new StorageException("Error al eliminar la imagen", e);
-		}
-		
+		}		
 	}
-
 }

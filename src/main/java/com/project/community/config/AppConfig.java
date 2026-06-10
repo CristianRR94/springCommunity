@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AppConfig {
 	
-	private final UsuarioRepository usuarioRepo;
+	private final UsuarioRepository usuarioRepository;
 	
 	 @Bean
      AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -34,7 +34,7 @@ public class AppConfig {
     @Bean
      UserDetailsService userDetailsService() {
     	return username -> {
-    		return usuarioRepo.findByNombre(username)
+    		return usuarioRepository.findByNombre(username)
     				.orElseThrow(()->
     		new UsernameNotFoundException("User not found"));
     	};

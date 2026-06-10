@@ -71,6 +71,8 @@ public class Participante extends TimestampEntity {
 	@EqualsAndHashCode.Exclude
 	private Usuario usuario;
 	
+	private String imagenParticipante;
+	
 	public void cambiarNombreParticipante(String nombre) {
 		if(nombre == null || nombre.isBlank()) {
 			throw new IllegalArgumentException("Nombre vacío");
@@ -99,5 +101,7 @@ public class Participante extends TimestampEntity {
 	public void recibirNotificacion(Evento evento) {
 		getEventos().add(evento);
 	}
+	
+
 
 }

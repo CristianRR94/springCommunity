@@ -12,9 +12,9 @@ public interface EventoService {
 	
 	public Evento postEvento(EventoDTO evento);
 	
-	public Evento putEvento(EventoDTO evento);
+	public Evento putEvento(EventoDTO evento, Long idParticipante);
 	
-	public void deleteEvento(Long id);
+	public void deleteEvento(Long id, Long idParticipante);
 	
 	public List<Evento> getEventosPorParticipanteId(Long idParticipante);
 }

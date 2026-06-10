@@ -2,17 +2,11 @@ package com.project.community.DTO;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UsuarioEntradaDTO {
+public record UsuarioEntradaDTO (
 
-	private String nombre;
-	private String password;
-	private String email;
-}
+	 String nombre,
+	 String password,
+	 String email)
+{}

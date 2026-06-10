@@ -41,7 +41,7 @@ public Participante obtenerParticipanteAutenticado() {
 	Usuario usuario = obtenerUsuarioAutenticado();
 	Participante participante = participanteService.findParticipanteByUsuario(usuario.getId());
 	if(participante == null) {
-		throw new IllegalStateException("No hay usuario autenticado");
+		throw new IllegalStateException("No hay asociacion del usuario con el participante");
 	}
 	return participante;
 	}

@@ -10,12 +10,12 @@ import com.project.community.enums.StorageFolder;
 
 public interface ImageService {
 	
-	public Resource getImage(String filename, String folder);
+	public Resource getImage(String filename);
 		
 	public Stream<Path> getImages();
 	
 	public String postImage(MultipartFile file, StorageFolder folder);
 	
-	public void deleteImage(String filename, String folder);
+	public void deleteImage(String filename);
 	
 }

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+//como hay setters en el controlador, lo dejamos como dto
 public class EventoDTO {
 	
 	private Long id;	
