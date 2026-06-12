@@ -2,6 +2,7 @@ package com.project.community.servicios;
 
 
 import java.util.Date;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -12,8 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
 import com.project.community.entidades.Usuario;
+import com.project.community.enums.ClaimJwt;
+import com.project.community.enums.TipoToken;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +23,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
 @Service
-public class JwtServiceImpl implements JwtService{
+public class JwtProviderServiceImpl implements JwtProviderService{
 
 	@Value("${jwt.secret}")
 	private String secretKey;
@@ -46,13 +48,13 @@ public class JwtServiceImpl implements JwtService{
 	@Override
 	public String generateToken(final Usuario usuario) {
 
-		return buildToken(usuario, jwtExpiration, "ACCESS");
+		return buildToken(usuario, jwtExpiration, TipoToken.ACCESS_TYPE.getValue());
 	}
 
 	@Override
 	public String generateRefreshToken(final Usuario usuario) {
 
-		return buildToken(usuario, refreshExpiration, "REFRESH");
+		return buildToken(usuario, refreshExpiration, TipoToken.REFRESH_TYPE.getValue());
 	}
 
 	
@@ -63,10 +65,10 @@ public class JwtServiceImpl implements JwtService{
 				.toList();
 		return Jwts.builder()
 				.claims(Map.of(
-						"usuarioId", usuario.getId(),
-						"nombre", usuario.getNombre(),
-						"tipo_uso", tipo,
-						"roles", roles)
+						ClaimJwt.USUARIO_ID.getValue(), usuario.getId(),
+						ClaimJwt.NOMBRE.getValue(), usuario.getNombre(),
+						ClaimJwt.TIPO_USO.getValue(), tipo,
+						ClaimJwt.ROLES.getValue(), roles)
 						)
 				.id(UUID.randomUUID().toString())
 				.subject(usuario.getNombre())
@@ -99,13 +101,12 @@ public class JwtServiceImpl implements JwtService{
 
 	@Override
 	public String extractType(String token) {
-		return extraerInfo(token).get("tipo_uso", String.class);
+		return extraerInfo(token).get(ClaimJwt.TIPO_USO.getValue(), String.class);
 	}
 	
 	@Override
 	public Long extractId(final String token) {
-		 
-		return extraerInfo(token).get("usuarioId", Long.class);
+		return extraerInfo(token).get(ClaimJwt.USUARIO_ID.getValue(), Long.class);
 	}
 
 }

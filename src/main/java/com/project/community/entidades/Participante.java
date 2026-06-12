@@ -71,7 +71,8 @@ public class Participante extends TimestampEntity {
 	@EqualsAndHashCode.Exclude
 	private Usuario usuario;
 	
-	private String imagenParticipante;
+	@Builder.Default
+	private String imagenParticipante = "default.png";
 	
 	public void cambiarNombreParticipante(String nombre) {
 		if(nombre == null || nombre.isBlank()) {
@@ -102,6 +103,6 @@ public class Participante extends TimestampEntity {
 		getEventos().add(evento);
 	}
 	
-
+	
 
 }

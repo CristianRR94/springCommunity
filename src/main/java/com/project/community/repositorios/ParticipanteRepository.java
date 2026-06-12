@@ -41,6 +41,6 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 
 	Optional<Participante> findByUsuarioEmail(String email);
 	
-	
+	Participante findByNombreParticipante(String nombre);
 
 }

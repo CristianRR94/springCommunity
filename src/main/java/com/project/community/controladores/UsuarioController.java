@@ -22,7 +22,8 @@ import com.project.community.DTO.UsuarioSalidaDTO;
 import com.project.community.entidades.Usuario;
 import com.project.community.mapper.UsuarioMapper;
 import com.project.community.servicios.AuthDataService;
-import com.project.community.servicios.UsuarioParticipanteService;
+import com.project.community.servicios.CuentaService;
+import com.project.community.servicios.TokenManagementService;
 import com.project.community.servicios.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -36,10 +37,10 @@ public class UsuarioController {
 	
 //zona privada
 	private final UsuarioService usuarioService;
-	private final UsuarioParticipanteService usuarioParticipanteService;
+	private final CuentaService cuentaService;
 	private final UsuarioMapper usuarioMapper;
 	private final AuthDataService authDataService;
-	
+	private final TokenManagementService tokenManagementService;
 	
 	@GetMapping
 	public List<UsuarioSalidaDTO> getUsuarios(){
@@ -59,13 +60,12 @@ public class UsuarioController {
 	@DeleteMapping("delete")
 	public void deleteUsuario() {
 		Long id = authDataService.obtenerUsuarioAutenticado().getId();
-		usuarioParticipanteService.deleteUsuarioParticipante(id);
+		cuentaService.deleteUsuarioParticipante(id);
 	}
 	
 	@PutMapping("modificar")
 	public ResponseEntity<UsuarioSalidaDTO> putUsuario(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO) {	
-		Long idUsuario = authDataService.obtenerUsuarioAutenticado().getId();
-		Usuario usuario = usuarioParticipanteService.modNombreUsuarioParticipante(idUsuario, usuarioDTO.nombre());
+			Usuario usuario = cuentaService.modNombreUsuarioParticipante(usuarioDTO.nombre());
 		if(usuario == null) {
 			return ResponseEntity.notFound().build();
 		}
@@ -78,7 +78,7 @@ public class UsuarioController {
 	@PostMapping("refresh")
 	public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
 
-		return usuarioService.refresh(authHeader);
+		return tokenManagementService.refresh(authHeader);
 		
 	}
 	

@@ -1,5 +1,7 @@
 package com.project.community.entidades;
 
+import com.project.community.enums.TipoToken;
+
 import jakarta.persistence.Column;
 
 import jakarta.persistence.Entity;
@@ -16,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Builder
@@ -26,7 +29,7 @@ import lombok.NoArgsConstructor;
 public class Token {
 	
 	public enum TokenType{
-		BEARER
+		BEARER,
 	}
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,10 +46,13 @@ public class Token {
 	
 	private boolean expired;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "tipo_uso")
-	private String tipoUso;
+	private TipoToken tipoUso;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "usuario_id")
+	@ToString.Exclude
 	private Usuario usuario;
 	
 	

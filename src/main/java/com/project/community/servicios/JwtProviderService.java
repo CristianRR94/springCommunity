@@ -9,7 +9,7 @@ import com.project.community.entidades.Usuario;
 
 
 
-public interface JwtService {
+public interface JwtProviderService {
 	public String generateToken(Usuario usuario);
 	
 	public String generateRefreshToken(final Usuario usuario);

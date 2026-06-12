@@ -31,6 +31,7 @@ public class ImageServiceImpl implements ImageService{
 	//private final Path rootLocation = Paths.get("images");
 	private final SecurityMethods securityMethods;
 	
+	private static final String IMAGE_PLACEHOLDER = "/default.png";
 
 	@PostConstruct
 	public void init() {
@@ -101,6 +102,9 @@ public class ImageServiceImpl implements ImageService{
 
 	@Override
 	public void deleteImage(String filename) {
+		if(filename == null || filename.isEmpty() || filename.contains(IMAGE_PLACEHOLDER)) {
+			return;
+		}
 		try {			
 			securityMethods.limpiarFile(filename);
 			Path imagePath = securityMethods.getRootLocation().resolve(filename).normalize();

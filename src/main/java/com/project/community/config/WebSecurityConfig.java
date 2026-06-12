@@ -93,25 +93,5 @@ public class WebSecurityConfig {
     	}
     	tokenRepository.saveAll(tokens);
     }
-    
-    
-    
-    
-    
-//  @Bean
-//  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-//  	http 
-//  	.csrf(csrf -> csrf.disable()) 
-//  	.cors(cors -> cors.configurationSource(corsConfigurationSource())) 
-//  	.authorizeHttpRequests(auth -> auth .requestMatchers("/**").permitAll() 
-//  			.anyRequest().permitAll() ) 
-//  	.authenticationProvider(authenticationProvider(userDetailsService())); 
-//  	return http.build();
-//  }
-    
-//
-//    @Bean
-//    PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
+ 
 }

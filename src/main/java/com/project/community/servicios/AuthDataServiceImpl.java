@@ -1,13 +1,13 @@
 package com.project.community.servicios;
 
 import org.springframework.security.core.Authentication;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.project.community.entidades.Participante;
 import com.project.community.entidades.Usuario;
+import com.project.community.repositorios.ParticipanteRepository;
 import com.project.community.repositorios.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -17,9 +17,10 @@ import lombok.RequiredArgsConstructor;
 public class AuthDataServiceImpl implements AuthDataService{
 	
 	private final UsuarioRepository usuarioRepository;
-	private final ParticipanteService participanteService;
+	private final ParticipanteRepository participanteRepository;
+
 	
-	
+@Override
 public Usuario obtenerUsuarioAutenticado() {
 	//obtener nombre de auth
 	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -35,11 +36,11 @@ public Usuario obtenerUsuarioAutenticado() {
 	return usuario;
 }
 
-
+@Override
 public Participante obtenerParticipanteAutenticado() {
 
 	Usuario usuario = obtenerUsuarioAutenticado();
-	Participante participante = participanteService.findParticipanteByUsuario(usuario.getId());
+	Participante participante = participanteRepository.findByUsuarioId(usuario.getId());
 	if(participante == null) {
 		throw new IllegalStateException("No hay asociacion del usuario con el participante");
 	}

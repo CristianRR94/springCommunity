@@ -11,14 +11,14 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 
-import com.project.community.servicios.JwtService;
+import com.project.community.servicios.JwtProviderService;
 
 import lombok.AllArgsConstructor;
 
 @Component
 @AllArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor{
-	private final JwtService jwtService;
+	private final JwtProviderService jwtProviderService;
 	//metodo para modificar el mensaje antes de enviarlo, si emite null, no se envía
 	public Message<?> preSend(Message<?> message, MessageChannel channel){
 		//permite leer cabeceras de protocolos STOMP
@@ -30,7 +30,7 @@ public class JwtChannelInterceptor implements ChannelInterceptor{
 			if(authHeader != null && authHeader.startsWith("Bearer ")) {
 				String token = authHeader.substring(7);
 				try {
-					String usuario = jwtService.extractUsername(token);
+					String usuario = jwtProviderService.extractUsername(token);
 					if(usuario != null) {
 					// vinculación de la identidad del usuario al websocket 
 					//e inyeccion de Principal en el controlador

@@ -14,7 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.project.community.entidades.Token;
 import com.project.community.repositorios.TokenRepository;
-import com.project.community.servicios.JwtService;
+import com.project.community.servicios.JwtProviderService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter{
 
-	private final JwtService jwtService;
+	private final JwtProviderService jwtProviderService;
 	private final UserDetailsService userDetailsService;
 	private final TokenRepository tokenRepository;
 
@@ -48,7 +48,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		}
 		
 		final String jwtToken = authHeader.substring(7);
-		final String userName = jwtService.extractUsername(jwtToken);
+		final String userName = jwtProviderService.extractUsername(jwtToken);
 		if(userName == null || SecurityContextHolder.getContext().getAuthentication() != null) {
 			filterChain.doFilter(request, response);
 			return;
@@ -67,7 +67,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 //			filterChain.doFilter(request, response);
 //			return;
 //		}
-		final boolean isTokenValid = jwtService.isTokenValid(jwtToken, userDetails);
+		final boolean isTokenValid = jwtProviderService.isTokenValid(jwtToken, userDetails);
 		if(!isTokenValid) {
 			filterChain.doFilter(request, response);
 			return;

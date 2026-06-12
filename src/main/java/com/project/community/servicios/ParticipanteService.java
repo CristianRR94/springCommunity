@@ -1,43 +1,56 @@
 package com.project.community.servicios;
 
-
-
 import java.util.List;
 import java.util.Set;
 
+import com.project.community.DTO.ParticipanteAmigoDTO;
+import com.project.community.DTO.ParticipanteDTO;
 import com.project.community.entidades.Participante;
 import com.project.community.entidades.Usuario;
 
 public interface ParticipanteService {
 
-	public Participante getParticipante(Long id);
+	// =========================================================================
+	// Métodos que devuelven DTOs (Para el Controlador / API Externa)
+	// =========================================================================
 	
-	public Participante postParticipante(Participante participante);
-	
-	public List<Participante> getParticipantes();
-	
-	public Participante putParticipante(Participante participante);
-	
-	public void deleteParticipante(Participante participante);
-	
-	public Participante findParticipanteByUsuario(Long id);
-	
-	public void addAmigo(Long idAmigo);
-	
-	//methods for the creation of "Participante" based on "Usuario"
-	
-	//public Participante postNameParticipante(Participante participante, String name);
-	
-	public Participante crearParticipanteNombreUsuario(String nombre, Usuario usuario);
-	
-	public void cambiarParticipanteNombre(String nombre, Long usuarioId);
-	
-	public Set<Participante> getAmigos(Long id);
+	ParticipanteDTO getParticipanteDTO(Long id);
 
-	Participante findParticipanteWithAmigosByUsuarioId();
+	ParticipanteAmigoDTO getAmigoDTO(Long id);
+
+	List<ParticipanteDTO> getParticipantesDTO();
+
+	Set<ParticipanteAmigoDTO> getAmigosAutenticadoDTO();
+
+	Set<ParticipanteDTO> mostrarListaAmigosDTO(String input);
+
+	// =========================================================================
+	// Métodos nativos con Entidades (Para uso interno entre servicios)
+	// =========================================================================
 	
-	public Set<Participante> mostrarListaAmigos(String input, Long miId);
+	Participante getParticipante(Long id);
 	
-	public Participante obtenerParticipanteAutenticado();
+	Participante postParticipante(Participante participante);
 	
+	List<Participante> getParticipantes();
+	
+	Participante putParticipante(Participante participante);
+	
+	void deleteParticipante(Participante participante);
+	
+	Set<Participante> getAmigos(Long id);
+	
+	Set<Participante> mostrarListaAmigos(String input, Long miId);
+
+	// =========================================================================
+	// Métodos de Lógica de Negocio y Modificaciones
+	// =========================================================================
+	
+	void addAmigo(Long idAmigo);
+	
+	Participante crearParticipanteNombreUsuario(String nombre, Usuario usuario);
+	
+	void cambiarParticipanteNombre(String nombre);
+	
+	void cambiarImagen(String imagen, Long id);
 }
