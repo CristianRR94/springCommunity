@@ -4,7 +4,9 @@ import java.time.LocalDate;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.project.community.dominio.EventoValidatorException;
 import com.project.community.dominio.ParticipanteException;
@@ -142,6 +144,13 @@ public class Evento extends TimestampEntity {
         this.maxNumParticipantes = maxNum;
         
         this.validarFecha();
+    }
+    
+    public List<Long> getIdParticipantesEvento(){
+    	Set<Participante> participantes = this.getParticipantesEvento();
+    	List<Long> pIds = participantes.stream().map(p -> p.getId()).collect(Collectors.toList());
+    	return pIds;
+    	
     }
 }
 

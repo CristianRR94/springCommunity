@@ -1,6 +1,7 @@
 package com.project.community.controladores;
 
 import java.util.List;
+
 import java.util.Set;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,12 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.community.DTO.ParticipanteAmigoDTO;
 import com.project.community.DTO.ParticipanteDTO;
-import com.project.community.enums.StorageFolder;
-import com.project.community.servicios.AuthDataService;
-import com.project.community.servicios.ImageService;
 import com.project.community.servicios.ParticipanteService;
-import com.project.community.storage.StorageException;
-
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -30,8 +26,6 @@ import lombok.AllArgsConstructor;
 public class ParticipanteController {
 
 	private final ParticipanteService participanteService;
-	private final AuthDataService authDataService;
-	private final ImageService imageService;
 	
 	@GetMapping("{id}")
 	public ParticipanteDTO getParticipante(@PathVariable Long id) {
@@ -65,11 +59,7 @@ public class ParticipanteController {
 	
 	@PostMapping("imagen")
 	public void cambiarImagen(@RequestPart (value="image") MultipartFile imagen) {
-		Long id = authDataService.obtenerParticipanteAutenticado().getId();
-		if(imagen == null || imagen.isEmpty()) {
-			throw new StorageException("Imagen vacía");		
-		}
-		String archivo = imageService.postImage(imagen, StorageFolder.USUARIOS);
-		participanteService.cambiarImagen(archivo, id);
+
+		participanteService.cambiarImagen(imagen);
 	}
 }

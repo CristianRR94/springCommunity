@@ -1,6 +1,7 @@
 package com.project.community.servicios;
 
 import org.springframework.security.authentication.AuthenticationManager;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -9,7 +10,7 @@ import com.project.community.controladores.TokenResponse;
 import com.project.community.entidades.Usuario;
 import com.project.community.repositorios.UsuarioRepository;
 
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,10 +35,5 @@ public class LoginServiceImpl implements LoginService{
 		tokenManagementService.saveUsuarioToken(usuarioLogin, refreshToken);
 		return new TokenResponse(jwtToken, refreshToken);
 	}
-	
-	@Override
-	@Transactional
-	public void logout(String token) {
-		tokenManagementService.revokeAllTokensByToken(token);
-	}
+
 }

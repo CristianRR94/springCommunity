@@ -7,6 +7,5 @@ public interface LoginService {
 
 	TokenResponse login(Usuario usuario);
 
-	void logout(String token);
 
 }

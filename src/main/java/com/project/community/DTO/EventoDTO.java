@@ -41,4 +41,6 @@ public class EventoDTO {
 	
 	private List<Long> participantesEvento;
 	private List<Long> administradores;
+	
+	
 }

@@ -25,8 +25,7 @@ public class WebsocketMessageController {
 	@MessageMapping("/chat/{eventoId}")
 	@SendTo("/topic/evento/{eventoId}")
 	public HistorialMensajesDTO getMensaje(@DestinationVariable Long eventoId, @Valid MensajeDTO mensaje, Principal principal) {
-		String username = principal.getName();
-		
+		String username = principal.getName();	
 		System.out.println("El mensaje es: " + mensaje + " para el evento con id: " + eventoId);
 		HistorialMensajesDTO mensajeProcesado = mensajeService.guardarMensaje(eventoId, mensaje, username);
 		return mensajeProcesado;

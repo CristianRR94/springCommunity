@@ -64,6 +64,7 @@ public class TokenManagementServiceImpl implements TokenManagementService{
 		return new TokenResponse(accessToken, newRefreshToken);
 	}
 	
+	
 	@Override
 	public void revokeAllUserTokens(final Usuario usuario) {
 		final List<Token> validUserTokens = tokenRepository.findAllByUsuarioIdAndExpiredIsFalseAndRevokedIsFalse(usuario.getId());
@@ -95,8 +96,7 @@ public class TokenManagementServiceImpl implements TokenManagementService{
 	public void revokeAllTokensByToken(String token) {
 		var tokenGuardado = tokenRepository.findByToken(token)
 				.orElseThrow(()-> new RuntimeException("Token no encontrado"));
-		tokenGuardado.setExpired(true);
-		tokenGuardado.setRevoked(true);
+		revokeAllUserTokens(tokenGuardado.getUsuario());
 		
 	}
 	

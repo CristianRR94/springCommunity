@@ -3,16 +3,14 @@ package com.project.community.controladores;
 import java.util.List;
 
 
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +21,6 @@ import com.project.community.entidades.Usuario;
 import com.project.community.mapper.UsuarioMapper;
 import com.project.community.servicios.AuthDataService;
 import com.project.community.servicios.CuentaService;
-import com.project.community.servicios.TokenManagementService;
 import com.project.community.servicios.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -40,7 +37,7 @@ public class UsuarioController {
 	private final CuentaService cuentaService;
 	private final UsuarioMapper usuarioMapper;
 	private final AuthDataService authDataService;
-	private final TokenManagementService tokenManagementService;
+
 	
 	@GetMapping
 	public List<UsuarioSalidaDTO> getUsuarios(){
@@ -70,16 +67,6 @@ public class UsuarioController {
 			return ResponseEntity.notFound().build();
 		}
 		return ResponseEntity.ok(usuarioMapper.toSalidaDTO(usuario));	
-	}
-	
-
-
-	// esto va de token
-	@PostMapping("refresh")
-	public TokenResponse refreshToken(@RequestHeader(HttpHeaders.AUTHORIZATION) final String authHeader) {
-
-		return tokenManagementService.refresh(authHeader);
-		
 	}
 	
 }

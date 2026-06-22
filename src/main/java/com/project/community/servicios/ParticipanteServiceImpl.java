@@ -6,20 +6,24 @@ import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.project.community.DTO.ParticipanteAmigoDTO;
 import com.project.community.DTO.ParticipanteDTO;
-import com.project.community.dominio.ParticipanteException;
 import com.project.community.entidades.Participante;
 import com.project.community.entidades.Usuario;
+import com.project.community.enums.StorageFolder;
 import com.project.community.mapper.ParticipanteMapper;
 import com.project.community.repositorios.ParticipanteRepository;
+import com.project.community.storage.StorageException;
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class ParticipanteServiceImpl implements ParticipanteService {
 	
 	private final ParticipanteRepository participanteRepository;
@@ -30,7 +34,7 @@ public class ParticipanteServiceImpl implements ParticipanteService {
 	private static final String IMAGE_PARTICIPANTES = "usuarios/default.png";
 	
 	@Override
-	@Transactional(readOnly = true)
+	
 	public ParticipanteDTO getParticipanteDTO(Long id) {
 		Participante participante = participanteRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Participante no encontrado"));
@@ -38,7 +42,7 @@ public class ParticipanteServiceImpl implements ParticipanteService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+
 	public ParticipanteAmigoDTO getAmigoDTO(Long id) {
 		Participante participante = participanteRepository.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Participante no encontrado"));
@@ -46,21 +50,21 @@ public class ParticipanteServiceImpl implements ParticipanteService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	
 	public List<ParticipanteDTO> getParticipantesDTO() {
 		List<Participante> participantes = participanteRepository.findAll();
 		return participanteMapper.toDTOs(participantes);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+
 	public Set<ParticipanteAmigoDTO> getAmigosAutenticadoDTO() {
 		Participante participante = authDataService.obtenerParticipanteAutenticado();
 		return participanteMapper.toAmigoListDTO(participante.getAmigos());
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	
 	public Set<ParticipanteDTO> mostrarListaAmigosDTO(String input) {
 		Participante participante = authDataService.obtenerParticipanteAutenticado();
 		Set<Participante> resultados = participanteRepository.buscarAmigos(input, participante.getId());
@@ -128,7 +132,7 @@ public class ParticipanteServiceImpl implements ParticipanteService {
 	}
 	
 	@Override
-	@Transactional(readOnly = true)
+	
 	public Set<Participante> getAmigos(Long id){
 		Participante participante = participanteRepository.findWithAmigosById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado"));
@@ -137,20 +141,26 @@ public class ParticipanteServiceImpl implements ParticipanteService {
 
 	@Transactional
 	@Override
-	public void cambiarImagen(String imagen, Long id) {
-		Participante participante = participanteRepository.findById(id)
-				.orElseThrow(() -> new ParticipanteException("No se ha encontrado al participante"));
+	public void cambiarImagen(MultipartFile imagen) {
+		if(imagen == null || imagen.isEmpty()) {
+			throw new StorageException("Archivo no encontrado");
+		}
+		Participante participante = authDataService.obtenerParticipanteAutenticado();
 		String fotoVieja = participante.getImagenParticipante();
+		String archivo = imageService.postImage(imagen, StorageFolder.USUARIOS);
+		
+		participante.setImagenParticipante(archivo);
 		imageService.deleteImage(fotoVieja);
-		participante.setImagenParticipante(imagen);
 	}
 
+	//sin llamadas
 	@Override
 	public List<Participante> getParticipantes() {
 		List<Participante> participantes = participanteRepository.findAll();
 		return participantes;
 	}
 
+	//sin llamadas
 	@Override
 	public Set<Participante> mostrarListaAmigos(String input, Long miId) {
 		Participante participante = authDataService.obtenerParticipanteAutenticado();

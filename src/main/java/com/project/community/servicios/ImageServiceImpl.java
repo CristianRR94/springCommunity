@@ -72,7 +72,7 @@ public class ImageServiceImpl implements ImageService{
 	@Override
 	public String postImage(MultipartFile file, StorageFolder folder) {
 		try {
-			if(file.isEmpty()) {
+			if(file == null || file.isEmpty()) {
 				throw new StorageException("Archivo vacío");
 			}
 			if(folder == null) {

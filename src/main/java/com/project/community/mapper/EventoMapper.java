@@ -46,10 +46,11 @@ public interface EventoMapper {
 	@Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
 	@Mapping(target = "participantesEvento", ignore=true)
+	@Mapping(target = "idParticipantesEvento", ignore=true)
 	@Mapping(target = "administradores", ignore=true)
 	Evento toEvento(EventoDTO eventoDTO);
-	List<EventoDTO> toDTOs(List<Evento> eventos);
-	List<Evento> toEventos(List<EventoDTO> eventoDTOs);
+	List<EventoDTO> toDTOs(Set<Evento> eventos);
+	Set<Evento> toEventos(List<EventoDTO> eventoDTOs);
 	
 	EventoPrincipalDTO toPrincipalDTO(Evento evento);
 	@Mapping(target = "createdAt", ignore = true)
@@ -61,8 +62,9 @@ public interface EventoMapper {
 	@Mapping(target = "oculto", ignore=true)
 	@Mapping(target = "privado", ignore=true)
 	@Mapping(target = "informacion", ignore=true)
+	@Mapping(target = "idParticipantesEvento", ignore=true)
 	Evento toEventoPrincipal(EventoPrincipalDTO eventoDTO);
-	List<Evento> toEventoPrincipalList(List<EventoPrincipalDTO> eventoDTO);
-	List<EventoPrincipalDTO> toPrincipalDTOList(List<Evento> eventos);
+	Set<Evento> toEventoPrincipalList(List<EventoPrincipalDTO> eventoDTO);
+	List<EventoPrincipalDTO> toPrincipalDTOList(Set<Evento> eventos);
 	
 }

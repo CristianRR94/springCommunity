@@ -33,7 +33,7 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 	//buscador participantes en amigos
 	@Query("SELECT p FROM Participante p WHERE LOWER(p.nombreParticipante) LIKE LOWER(CONCAT('%', :input, '%'))"
 			+ " AND p.usuario.id != :miId"
-			+ " AND p NOT IN (SELECT a FROM Participante p2 JOIN p2.amigos a WHERE p2.usuario.id = :miId)")
+			+ " AND p NOT IN (SELECT a FROM Participante p2 JOIN p2.amigos a WHERE p2.id = :miId)")
 	Set<Participante> buscarAmigos(@Param("input") String input, @Param("miId") Long miId);
 	
 	@Query("SELECT p FROM Participante p LEFT JOIN FETCH p.amigos WHERE p.usuario.id= :usuarioId")
@@ -42,5 +42,7 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 	Optional<Participante> findByUsuarioEmail(String email);
 	
 	Participante findByNombreParticipante(String nombre);
+	
+
 
 }

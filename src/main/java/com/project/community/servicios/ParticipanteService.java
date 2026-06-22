@@ -3,6 +3,8 @@ package com.project.community.servicios;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.project.community.DTO.ParticipanteAmigoDTO;
 import com.project.community.DTO.ParticipanteDTO;
 import com.project.community.entidades.Participante;
@@ -52,5 +54,5 @@ public interface ParticipanteService {
 	
 	void cambiarParticipanteNombre(String nombre);
 	
-	void cambiarImagen(String imagen, Long id);
+	void cambiarImagen(MultipartFile imagenFile);
 }

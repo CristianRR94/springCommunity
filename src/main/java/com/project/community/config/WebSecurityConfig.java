@@ -2,7 +2,6 @@ package com.project.community.config;
 
 import java.util.List;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -13,24 +12,23 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.project.community.entidades.Token;
-import com.project.community.repositorios.TokenRepository;
+
+import com.project.community.servicios.TokenManagementService;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-	
 
 	private final JwtAuthFilter jwtAuthFilter;
-	private final TokenRepository tokenRepository;
 	private final AuthenticationProvider authProvider;
+	private final TokenManagementService tokenManagementService;
+
     
     //permitir peticiones
     @Bean
@@ -69,7 +67,10 @@ public class WebSecurityConfig {
 			logout.logoutUrl("/auth/logout")
 			.addLogoutHandler((request, response, authentication)->{
 				final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-				logout(authHeader);
+				if(authHeader != null && authHeader.startsWith("Bearer ")) {
+					final String token = authHeader.substring(7);
+					tokenManagementService.revokeAllTokensByToken(token);
+				}
 			})
 		.logoutSuccessHandler((request, response, authentication)->
 		SecurityContextHolder.clearContext())
@@ -77,21 +78,7 @@ public class WebSecurityConfig {
 		return http.build();
 	}
     
-    @Transactional
-    public void logout(final String token) {
-    	if(token == null || !token.startsWith("Bearer ")) {
-    		throw new IllegalArgumentException("Invalid token");
-    	}
-    	final String jwtToken = token.substring(7);
-    	final Token foundToken = tokenRepository.findByToken(jwtToken)
-    			.orElseThrow(()-> new IllegalArgumentException("Invalid token"));
-    	List<Token> tokens = tokenRepository
-    			.findAllByUsuarioIdAndExpiredIsFalseAndRevokedIsFalse(foundToken.getUsuario().getId());
-    	for(final Token tokenValid : tokens) {
-    		tokenValid.setExpired(true);
-    		tokenValid.setRevoked(true);
-    	}
-    	tokenRepository.saveAll(tokens);
-    }
+ 
+   
  
 }

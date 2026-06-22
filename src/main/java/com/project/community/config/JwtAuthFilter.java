@@ -2,6 +2,7 @@ package com.project.community.config;
 
 import java.io.IOException;
 
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.project.community.entidades.Token;
+import com.project.community.enums.TipoToken;
 import com.project.community.repositorios.TokenRepository;
 import com.project.community.servicios.JwtProviderService;
 
@@ -37,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 			@NonNull HttpServletResponse response, 
 			@NonNull FilterChain filterChain
 	) throws ServletException, IOException {
-		if(request.getServletPath().contains("/auth")) { //comprobar
+		if(request.getServletPath().contains("/auth")) { 
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -56,23 +58,17 @@ public class JwtAuthFilter extends OncePerRequestFilter{
 		
 		final Token token = tokenRepository.findByToken(jwtToken)
 				.orElse(null);
-		if(token == null || token.isExpired() || token.isRevoked()) {
+		if(token == null || token.isExpired() || token.isRevoked() || token.getTipoUso() != TipoToken.ACCESS_TYPE) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 		final UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-//		final Optional<Usuario> usuario = usuarioRepository.findByEmail(userDetails.getUsername());
-//		
-//		if(usuario.isEmpty()) {
-//			filterChain.doFilter(request, response);
-//			return;
-//		}
+
 		final boolean isTokenValid = jwtProviderService.isTokenValid(jwtToken, userDetails);
 		if(!isTokenValid) {
 			filterChain.doFilter(request, response);
 			return;
-		}
-		
+		}	
 		
 		final var authToken = new UsernamePasswordAuthenticationToken(
 				userDetails, 
