@@ -23,38 +23,61 @@ public class TokenManagementServiceImpl implements TokenManagementService{
 	private final TokenRepository tokenRepository;
 	private final JwtProviderService jwtProviderService;
 	private final UsuarioRepository usuarioRepository;
-
-	@Override
-	public TokenResponse refresh(final String authHeader) {
-		//empieza por berarer?
+	
+	private void comprobarEmpiezaPorBearer(final String authHeader) {
 		if(authHeader == null || !authHeader.startsWith("Bearer ")) {
-			throw new IllegalArgumentException("Ivalid bearer token");
+			throw new IllegalArgumentException("Invalid bearer token");
 		}
-		
-		//esta en la base de datos?
-		final String refreshToken = authHeader.substring(7);
-		final String userName = jwtProviderService.extractUsername(refreshToken);
+	}
+	
+	private void comprobarEstaDB(final String userName) {
 		if(userName == null){
-			throw new IllegalArgumentException("Invalid refresh token");
+			throw new IllegalArgumentException("Invalid refresh token 1");
 		}
-		
-		//tipo de token?
-		final String tipo = jwtProviderService.extractType(refreshToken);
+	}
+	
+	private void comprobarTipoToken(final String tipo) {
 		if(!TipoToken.REFRESH_TYPE.getValue().equals(tipo)) {
 			throw new IllegalArgumentException("Invalid token type");
 		}
-		
-		final Usuario usuario = usuarioRepository.findByNombre(userName).orElseThrow(
-				()->new UsernameNotFoundException(userName));
+	}
+	
+	private void comprobarRefreshValido(final String refreshToken, final Usuario usuario) {
 		if(!jwtProviderService.isTokenValid(refreshToken, usuario)) {
 			throw new IllegalArgumentException("Invalid refresh token");
 		}
-		
-		var tokenDB = tokenRepository.findByToken(refreshToken)
-				.orElseThrow(()-> new IllegalArgumentException("Token no registrado"));
+	}
+	
+	private void comprobarSiEstaExpiradoORevocado(final Token tokenDB) {
 		if(tokenDB.isExpired() || tokenDB.isRevoked()) {
 			throw new IllegalArgumentException("Invalid token");
 		}
+	}
+
+	@Override
+	public TokenResponse refresh(final String authHeader) {
+		
+		//empieza por berarer?
+		comprobarEmpiezaPorBearer(authHeader);
+		
+		final String refreshToken = authHeader.substring(7);
+		final String userName = jwtProviderService.extractUsername(refreshToken);
+		
+		//esta en la base de datos?
+		comprobarEstaDB(userName);
+		
+		//tipo de token?
+		final String tipo = jwtProviderService.extractType(refreshToken);
+		comprobarTipoToken(tipo);
+		
+		//esRefreshValido?
+		final Usuario usuario = usuarioRepository.findByNombre(userName).orElseThrow(
+				()->new UsernameNotFoundException(userName));
+		comprobarRefreshValido(refreshToken, usuario);
+		
+		Token tokenDB = tokenRepository.findByToken(refreshToken)
+				.orElseThrow(()-> new IllegalArgumentException("Token no registrado"));
+		comprobarSiEstaExpiradoORevocado(tokenDB);
 	
 		final String accessToken = jwtProviderService.generateToken(usuario);
 		final String newRefreshToken = jwtProviderService.generateRefreshToken(usuario);
