@@ -5,12 +5,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - JWT_SECRET_KEY=NTRZSGpyeW5jUE83NjU0TmZyZEh2YzRHRjFwT0owdXk=
+      - JWT_SECRET_KEY=${JWT_SECRET}
       - JWT_EXPIRATION=36000000
       - JWT_REFRESH_EXPIRATION=604800000
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/communitydb
       - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=chanquete94
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
     volumes:
       - .:/app
@@ -26,7 +26,7 @@ services:
     environment:
       - POSTGRES_DB=communitydb
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=chanquete94
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
