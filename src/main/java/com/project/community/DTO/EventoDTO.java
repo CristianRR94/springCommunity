@@ -1,6 +1,7 @@
 package com.project.community.DTO;
 
 import java.time.LocalDate;
+
 import java.util.List;
 
 import jakarta.validation.constraints.Max;
@@ -37,7 +38,8 @@ public class EventoDTO {
 	
 	@Min(value = 0, message = "El número mínimo de participantes es 0")
 	@Max(value = 255, message = "El número máximo de participantes no puede superar los 255")
-	private int maxNumParticipantes;
+	@Builder.Default
+	private int maxNumParticipantes = 255;
 	
 	private List<Long> participantesEvento;
 	private List<Long> administradores;

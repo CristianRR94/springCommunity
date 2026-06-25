@@ -27,10 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/eventos")
 public class EventoController {
 	
-	private final EventoService eventoService;
-
-	
-	
+	private final EventoService eventoService;	
 	
 	@GetMapping("/{id}")
 	public EventoDTO getEvento(@PathVariable Long id) {

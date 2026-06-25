@@ -18,6 +18,9 @@ public class ImageHandlerConfig implements WebMvcConfigurer{
 	}
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registro) {
+		if(properties == null || properties.getLocation() == null) {
+			return;
+		}
 		String location = properties.getLocation();
 		Path path = Path.of(location);
 		String finalLocation = path.isAbsolute() ? 

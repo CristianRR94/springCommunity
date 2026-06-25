@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleInvalidToken(Exception ex) {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
-                "Token inválido.",
+                "Token inválido",
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
