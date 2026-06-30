@@ -1,8 +1,8 @@
 package com.project.community.enums;
 
 public enum TipoToken {
-	ACCESS_TYPE("ACCESS"),
-	REFRESH_TYPE("REFRESH");
+	ACCESS("ACCESS"),
+	REFRESH("REFRESH");
 	
 	
 	private final String value;

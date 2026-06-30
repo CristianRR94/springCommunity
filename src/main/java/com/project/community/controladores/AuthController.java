@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.community.DTO.LoginDTO;
 import com.project.community.DTO.UsuarioEntradaDTO;
 import com.project.community.entidades.Usuario;
 import com.project.community.mapper.UsuarioMapper;
@@ -46,9 +47,9 @@ public class AuthController {
 	
 	//autenticar
 	@PostMapping("/login")
-	public ResponseEntity<TokenResponse> authenticate(@RequestBody @Valid UsuarioEntradaDTO usuarioDTO) {
+	public ResponseEntity<TokenResponse> authenticate(@RequestBody @Valid LoginDTO usuarioDTO) {
 		System.out.println("ENTRÓ AL LOGIN");
-		Usuario usuarioEntrada = usuarioMapper.toUsuarioEntrada(usuarioDTO);
+		Usuario usuarioEntrada = usuarioMapper.toUsuarioLogin(usuarioDTO);
 		final TokenResponse token = loginService.login(usuarioEntrada);
 		return ResponseEntity.ok(token);
 	}

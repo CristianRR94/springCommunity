@@ -37,7 +37,7 @@ public class TokenManagementServiceImpl implements TokenManagementService{
 	}
 	
 	private void comprobarTipoToken(final String tipo) {
-		if(!TipoToken.REFRESH_TYPE.getValue().equals(tipo)) {
+		if(!TipoToken.REFRESH.getValue().equals(tipo)) {
 			throw new IllegalArgumentException("Invalid token type");
 		}
 	}

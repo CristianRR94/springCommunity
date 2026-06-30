@@ -1,7 +1,9 @@
 package com.project.community.DTO;
 
 import java.time.LocalDate;
+import lombok.Builder;
 
+@Builder
 public record EventoPrincipalDTO (
 		 Long id,	
 		 String nombreEvento,

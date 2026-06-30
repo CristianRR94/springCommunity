@@ -46,7 +46,7 @@ public class TokenManagementServiceImplTest {
 		usuario.setNombre(username);
 		
 		when(jwtProviderService.extractUsername(token)).thenReturn(username);
-		when(jwtProviderService.extractType(anyString())).thenReturn(TipoToken.REFRESH_TYPE.getValue());
+		when(jwtProviderService.extractType(anyString())).thenReturn(TipoToken.REFRESH.getValue());
 		when(usuarioRepository.findByNombre(username)).thenReturn(Optional.of(usuario));
 		when(jwtProviderService.isTokenValid(token, usuario)).thenReturn(true);
 		when(tokenRepository.findByToken(token)).thenReturn(Optional.of(tokenDB));

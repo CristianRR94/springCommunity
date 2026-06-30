@@ -2,10 +2,10 @@ package com.project.community.mapper;
 
 import java.util.List;
 
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.project.community.DTO.LoginDTO;
 import com.project.community.DTO.UsuarioEntradaDTO;
 import com.project.community.DTO.UsuarioSalidaDTO;
 import com.project.community.entidades.Usuario;
@@ -30,4 +30,12 @@ public interface UsuarioMapper {
 	Usuario toUsuarioEntrada(UsuarioEntradaDTO usuarioEntradaDTO);
 	List<UsuarioEntradaDTO> toEntradaDTOs(List<Usuario> usuarios);
 	List<Usuario> toUsuarioEntradas(List<UsuarioEntradaDTO> usuarioEntradaDTO);
+	
+	LoginDTO toLoginDTO(Usuario usuario);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "rol", ignore = true)
+	@Mapping(target = "tokens", ignore = true)
+	@Mapping(target = "participante", ignore = true)
+	@Mapping(target = "email", ignore = true)
+	Usuario toUsuarioLogin(LoginDTO loginDTO);
 }

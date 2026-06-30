@@ -1,9 +1,11 @@
 package com.project.community.DTO;
 
+import jakarta.validation.constraints.NotBlank;
 
 public record LoginDTO( 
-
-	String username,
+	@NotBlank
+	String nombre,
+	@NotBlank
 	String password
 	) {
 }

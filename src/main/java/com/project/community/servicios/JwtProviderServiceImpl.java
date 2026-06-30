@@ -48,13 +48,13 @@ public class JwtProviderServiceImpl implements JwtProviderService{
 	@Override
 	public String generateToken(final Usuario usuario) {
 
-		return buildToken(usuario, jwtExpiration, TipoToken.ACCESS_TYPE.getValue());
+		return buildToken(usuario, jwtExpiration, TipoToken.ACCESS.getValue());
 	}
 
 	@Override
 	public String generateRefreshToken(final Usuario usuario) {
 
-		return buildToken(usuario, refreshExpiration, TipoToken.REFRESH_TYPE.getValue());
+		return buildToken(usuario, refreshExpiration, TipoToken.REFRESH.getValue());
 	}
 
 	

@@ -6,6 +6,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,12 +18,10 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.community.DTO.EventoDTO;
+import com.project.community.DTO.EventoPrincipalDTO;
 import com.project.community.config.JwtAuthFilter;
 import com.project.community.controladores.EventoController;
-import com.project.community.entidades.Evento;
 import com.project.community.servicios.EventoService;
 import com.project.community.storage.StorageProperties;
 
@@ -65,7 +66,28 @@ public class EventoControllerTest {
 	
 	@Test
 	void getEventosPorParticipanteId_ShouldReturnListOfEventos_WhenIdParticipanteExists() throws Exception{
+		//arrange
+		EventoPrincipalDTO principalDto = EventoPrincipalDTO.builder()
+				.id(1L)
+				.nombreEvento("eventoTest")
+				.build();
+		EventoPrincipalDTO principalDto2 = EventoPrincipalDTO.builder()
+				.id(2L)
+				.nombreEvento("eventoTest2")
+				.build();
+		List<EventoPrincipalDTO> listaEventos= new ArrayList<EventoPrincipalDTO>();
+		listaEventos.add(principalDto);
+		listaEventos.add(principalDto2);
+		when(eventoService.getEventosPorParticipantePrincipalDTO()).thenReturn(listaEventos);
 		
+		//act assert
+		mockmvc.perform(get("/api/eventos/mis-eventos")
+				.contentType(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk())
+		.andExpect(jsonPath("$[0].id").value(1))
+		.andExpect(jsonPath("$[1].id").value(2));
+	
 	}
 
 }
