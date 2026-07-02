@@ -78,11 +78,11 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ParticipanteException.class)
 	public ResponseEntity<ErrorResponse> handleInvalidParticipante(ParticipanteException ex){
 		ErrorResponse error = new ErrorResponse(
-				HttpStatus.UNPROCESSABLE_ENTITY.value(),
+				HttpStatus.UNPROCESSABLE_CONTENT.value(),
 				ex.getMessage(),
 				System.currentTimeMillis()
 				);
-		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+		return new ResponseEntity<>(error, HttpStatus.UNPROCESSABLE_CONTENT);
 	}
 	
 	@ExceptionHandler(EventoNotFoundException.class)
@@ -95,10 +95,10 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(ValidatorException.class)
 	public ResponseEntity<ErrorResponse> handleValidation(ValidatorException ex){
-		ErrorResponse error = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+		ErrorResponse error = new ErrorResponse(HttpStatus.UNPROCESSABLE_CONTENT.value(),
 				ex.getMessage(),
 				System.currentTimeMillis());
-			return new ResponseEntity<ErrorResponse>(error, HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<ErrorResponse>(error, HttpStatus.UNPROCESSABLE_CONTENT);
 	}
 	
 	@ExceptionHandler(org.springframework.web.bind.MethodArgumentNotValidException.class)

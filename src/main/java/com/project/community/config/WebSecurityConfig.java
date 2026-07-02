@@ -65,20 +65,17 @@ public class WebSecurityConfig {
 		.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 		.logout(logout->
 			logout.logoutUrl("/auth/logout")
-			.addLogoutHandler((request, response, authentication)->{
+			.addLogoutHandler((request, _, _)->{
 				final var authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 				if(authHeader != null && authHeader.startsWith("Bearer ")) {
 					final String token = authHeader.substring(7);
 					tokenManagementService.revokeAllTokensByToken(token);
 				}
 			})
-		.logoutSuccessHandler((request, response, authentication)->
+		.logoutSuccessHandler((_, _, _)->
 		SecurityContextHolder.clearContext())
 		);
 		return http.build();
 	}
-    
- 
-   
  
 }

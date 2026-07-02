@@ -102,7 +102,5 @@ public class Participante extends TimestampEntity {
 	public void recibirNotificacion(Evento evento) {
 		getEventos().add(evento);
 	}
-	
-	
 
 }

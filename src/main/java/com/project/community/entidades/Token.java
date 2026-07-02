@@ -2,6 +2,7 @@ package com.project.community.entidades;
 
 import com.project.community.enums.TipoToken;
 
+
 import jakarta.persistence.Column;
 
 import jakarta.persistence.Entity;
