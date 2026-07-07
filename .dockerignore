@@ -1,0 +1,39 @@
+# Compilación y binarios locales (Maven/Java)
+target/
+build/
+.gradle/
+bin/
+out/
+.mvn/wrapper/maven-wrapper.jar
+
+# Secretos y Entornos (Seguridad)
+.env
+*.properties.local
+*.yml.local
+
+# Docker e infraestructura local
+docker-compose.yml
+.dockerignore
+Dockerfile*
+
+# Frontend (Si aplica)
+node_modules/
+.angular/
+dist/
+
+# Configuraciones de IDEs (Eclipse, IntelliJ, VS Code)
+.settings/
+.project
+.classpath
+.idea/
+*.iml
+.vscode/
+.factorypath
+
+# Git, Logs y Basura del Sistema
+.git
+.gitignore
+*.log
+HELP.md
+.DS_Store
+Thumbs.db

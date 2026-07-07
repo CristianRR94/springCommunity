@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: dev
     container_name: community-app
     ports:
       - "8080:8080"
@@ -14,8 +16,9 @@ services:
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
     volumes:
       - .:/app
-      - ~/.m2:/root/.m2
+      - ~/.m2:/root/.m2m
       - /app/target
+      - app_images:/app/images
     working_dir: /app
     command: ./mvnw spring-boot:run
     depends_on:
@@ -37,3 +40,4 @@ services:
 
 volumes:
   postgres_data:
+  app_images:
