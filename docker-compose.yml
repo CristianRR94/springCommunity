@@ -16,7 +16,7 @@ services:
       - SPRING_DEVTOOLS_RESTART_ENABLED=true
     volumes:
       - .:/app
-      - ~/.m2:/root/.m2m
+      - ~/.m2:/root/.m2
       - /app/target
       - app_images:/app/images
     working_dir: /app
