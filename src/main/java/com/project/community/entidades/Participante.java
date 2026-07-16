@@ -1,6 +1,5 @@
 package com.project.community.entidades;
 
-//import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +16,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,16 +24,13 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Table(name = "participantes")
-
 public class Participante extends TimestampEntity {
 	
 	@Id
@@ -44,63 +41,73 @@ public class Participante extends TimestampEntity {
 	@NotBlank
 	private String nombreParticipante;
 	
+	// Excluidos de Equals, HashCode y ToString para evitar LazyInitializationException
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	@JsonBackReference("participantesEv")
 	@ManyToMany(mappedBy = "participantesEvento")
 	@Builder.Default
 	private Set<Evento> eventos = new HashSet<>();
 	
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	@JsonBackReference("administradoresEv")
 	@ManyToMany(mappedBy = "administradores")
 	@Builder.Default
 	private Set<Evento> eventosAdministrados = new HashSet<>();
 	
-	@ManyToMany
-	@JoinTable(
-			name="participante_amigos",
-			joinColumns = @JoinColumn(name="participante_id"),
-			inverseJoinColumns = @JoinColumn(name= "amigo_id"))
-	@Builder.Default
 	@ToString.Exclude
 	@EqualsAndHashCode.Exclude
+	@ManyToMany
+	@JoinTable(
+			name = "participante_amigos",
+			joinColumns = @JoinColumn(name = "participante_id"),
+			inverseJoinColumns = @JoinColumn(name = "amigo_id"))
+	@Builder.Default
 	private Set<Participante> amigos = new HashSet<>();
 	
+	@ToString.Exclude
+	@EqualsAndHashCode.Exclude
 	@OneToOne
 	@JoinColumn(name = "usuario_id")
 	@JsonIgnoreProperties({"password", "email"})
-	@ToString.Exclude
-	@EqualsAndHashCode.Exclude
 	private Usuario usuario;
 	
 	@Builder.Default
 	private String imagenParticipante = "default.png";
 	
+	// ==========================================
+	// Métodos de Dominio
+	// ==========================================
+
 	public void cambiarNombreParticipante(String nombre) {
-		if(nombre == null || nombre.isBlank()) {
+		if (nombre == null || nombre.isBlank()) {
 			throw new IllegalArgumentException("Nombre vacío");
 		}
-		if(nombre.length()<6 || nombre.length()>20) {
+		if (nombre.length() < 6 || nombre.length() > 20) {
 			throw new IllegalArgumentException("El nombre debe tener entre 6 y 20 letras");
 		}
 		this.nombreParticipante = nombre;
 	}
 	
 	public Long obtenerIdUsuario() {
-		if(this.usuario ==null) {
+		if (this.usuario == null) {
 			throw new IllegalStateException("El participante no tiene usuario asociado");
 		}
 		return this.usuario.getId();
 	}
 	
 	public void agregarAmigo(Participante amigo) {
-		if(amigo == null || amigo.equals(this)) {
+		if (amigo == null || amigo.equals(this)) {
 			throw new IllegalArgumentException("Error al añadir amigo");
 		}
-		this.amigos.add(amigo);
+		// Si es una amistad bidireccional (tipo Facebook):
+		if (this.amigos.add(amigo)) {
+			amigo.getAmigos().add(this);
+		}
 	}
-	
 	
 	public void recibirNotificacion(Evento evento) {
 		getEventos().add(evento);
 	}
-
 }

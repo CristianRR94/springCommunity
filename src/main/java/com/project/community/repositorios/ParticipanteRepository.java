@@ -41,6 +41,8 @@ public interface ParticipanteRepository extends JpaRepository<Participante, Long
 
 	Optional<Participante> findByUsuarioEmail(String email);
 	
+	Optional<Participante> findByUsuarioNombre(String nombre);
+	
 	Participante findByNombreParticipante(String nombre);
 	
 

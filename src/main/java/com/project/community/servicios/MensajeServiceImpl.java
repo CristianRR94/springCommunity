@@ -27,10 +27,10 @@ public class MensajeServiceImpl implements MensajeService{
 
 	@Override
 	@Transactional
-	public HistorialMensajesDTO guardarMensaje(Long eventoId, MensajeDTO mensajeDto, String email) {
+	public HistorialMensajesDTO guardarMensaje(Long eventoId, MensajeDTO mensajeDto, String nombre) {
 		//getReference para meter como foreign key
 		Evento evento = eventoRepository.getReferenceById(eventoId);
-		Participante emisor = participanteRepository.findByUsuarioEmail(email)
+		Participante emisor = participanteRepository.findByUsuarioNombre(nombre)
 				.orElseThrow(() -> new IllegalArgumentException("El usuario no es un participante válido"));
 		boolean esParticipanteReal = eventoRepository.existsByIdAndParticipantesEventoId(eventoId, emisor.getId());
 		if (!esParticipanteReal) {
@@ -40,9 +40,6 @@ public class MensajeServiceImpl implements MensajeService{
 		mensaje.setTexto(mensajeDto.texto());
 		mensaje.setEvento(evento);
 		mensaje.setEmisor(emisor);
-		if (!emisor.getEventos().contains(evento)) {
-		    throw new SecurityException("No estás inscrito en este evento");
-		}
 		Mensaje mensajeGuardado = mensajeRepository.save(mensaje);
 		return new HistorialMensajesDTO(
                 mensajeGuardado.getId(),
@@ -51,21 +48,20 @@ public class MensajeServiceImpl implements MensajeService{
                 emisor.getNombreParticipante(),
                 mensajeGuardado.getCreatedAt()
                 );
-		
 	}
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<HistorialMensajesDTO> obtenerHistorial(Long eventoId) {
 		return mensajeRepository.findByEventoIdOrderByCreatedAtAsc(eventoId)
-				.stream()
-				.map((mensaje)->new HistorialMensajesDTO(
-						mensaje.getId(),
-						mensaje.getTexto(),
-						mensaje.getEmisor().getId(),
-						mensaje.getEmisor().getNombreParticipante(),
-						mensaje.getCreatedAt()))
-				.collect(Collectors.toList());
+			.stream()
+			.map((mensaje)->new HistorialMensajesDTO(
+					mensaje.getId(),
+					mensaje.getTexto(),
+					mensaje.getEmisor().getId(),
+					mensaje.getEmisor().getNombreParticipante(),
+					mensaje.getCreatedAt()))
+			.collect(Collectors.toList());
 	}
 
 }

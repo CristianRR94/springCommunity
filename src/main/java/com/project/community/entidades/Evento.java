@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -134,6 +135,7 @@ public class Evento extends TimestampEntity {
     
 
     public void actualizarEvento(String nombre, String tipo, LocalDate fecha, String informacion, boolean privado, boolean oculto, int maxNum) {
+    	boolean fechaMod = Objects.equals(this.fechaEvento, fecha);
     	this.nombreEvento = nombre;
         this.tipoEvento = tipo;
         this.fechaEvento = fecha;
@@ -143,7 +145,10 @@ public class Evento extends TimestampEntity {
         this.oculto = oculto;
         this.maxNumParticipantes = maxNum;
         
-        this.validarFecha();
+        if(!fechaMod) {
+        	this.validarFecha();
+        }
+        
     }
     
     public List<Long> getIdParticipantesEvento(){

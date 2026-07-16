@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -39,8 +40,11 @@ public class JwtChannelInterceptor implements ChannelInterceptor{
 						accessor.setUser(authentication);
 					}
 				} catch(Exception ex) {
-					System.out.println("Error en la autenticación de websocket" + ex.getMessage());
-				}
+					throw new MessageDeliveryException("Fallo en la autenticación del WebSocket: " + ex.getMessage());
+				} 
+			}
+			else {
+				throw new MessageDeliveryException("Cabecera Authorization ausente o inválida");
 			}
 		}
 		return message;
