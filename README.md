@@ -20,7 +20,7 @@ Una API RESTful diseñada para la gestión de eventos, con funcionalidades propi
 ##  Características:
 
 *   **Autenticación mediante JWT:** Arquitectura stateless mediante json-web-tokens.
-*   **Estructura monolítica basada en capas:** La aplicación contiene toda la funcionalidad. La organización sigue un división de responsabilidades, no de negocio.
+*   **Estructura monolítica basada en capas:** La aplicación contiene toda la funcionalidad. La organización sigue una división por responsabilidades, no por negocio.
 *   **Entorno docker:** Configuración lista para producción usando Docker para asegurar la consistencia entre entornos.
 
 ---
@@ -44,5 +44,13 @@ git clone https://github.com/CristianRR94/springCommunity.git
 # 2. Ir al directorio
 cd springCommunity
 
-# 3. Levantar los contenedores (Aplicación + Base de datos)
+# 3. Crear el archivo de configuración ambiental (.env)
+# A base64-encoded HMAC secret — genera un valor aleatorio en producción
+export JWT_SECRET="bXlTdXBlclNlY3JldEtleVRoYXRJc0F0TGVhc3Q2NENoYXJzTG9uZw=="
+
+# Database password — debe ser igual a POSTGRES_PASSWORD en el archivo docker-compose.yml
+export DB_PASSWORD="changeme"
+
+# 4. Levantar los contenedores (Aplicación + Base de datos)
 docker-compose up -d
+```
