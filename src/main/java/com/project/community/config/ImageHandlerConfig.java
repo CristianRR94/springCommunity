@@ -27,6 +27,6 @@ public class ImageHandlerConfig implements WebMvcConfigurer{
 				path.toUri().toString() : 
 					"file:" + System.getProperty("user.dir") + "/" + location + "/";
 		registro.addResourceHandler("/images/**")
-		.addResourceLocations(finalLocation);
+		.addResourceLocations(finalLocation, "classpath:/static/images");
 	}
 }
